@@ -8,7 +8,7 @@ Temporarily and Transparently, tag your eloquent models
 
 ```
 
-composer install imanghafoori/laravel-temp-tag
+composer require imanghafoori/laravel-temp-tag
 
 ```
 
