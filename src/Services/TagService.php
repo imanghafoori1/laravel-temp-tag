@@ -23,7 +23,7 @@ class TagService
         return $this->getTagQuery($tag)->where('expired_at', '>', $this->now())->first() ?: null;
     }
 
-    public function getTag(string $tag) : ?TempTag
+    public function getTag(string $tag): ?TempTag
     {
         return $this->getTagQuery($tag)->first();
     }
@@ -70,7 +70,7 @@ class TagService
 
         $new_tags = [];
         foreach ((array)$tag as $tg) {
-            $data['tag'] = $tg;
+            $data['title'] = $tg;
             $new_tags[] = $tagObj = TempTag::query()->updateOrCreate($data, $data + $exp);
             $this->fireEvent($eventName, $tagObj);
         }
@@ -78,13 +78,13 @@ class TagService
         return $new_tags;
     }
 
-    public function unTag($tag = null)
+    public function unTag($titles = null)
     {
         $forTaggable = $this->getTaggableWhere();
 
         $tags = TempTag::query()->where($forTaggable);
 
-        $tag && ($tags->whereIn('tag', (array)$tag));
+        $titles && $tags->whereIn('title', (array)$titles);
         $tags = $tags->get();
         $this->deleteAll($tags);
     }
@@ -121,7 +121,7 @@ class TagService
     {
         ! $event && $event = 'tmp_tagged';
 
-        $event .= ':'.$this->model->getTable().','.$tag->tag;
+        $event .= ':'.$this->model->getTable().','.$tag->title;
 
         event($event, [$this->model, $tag]);
     }

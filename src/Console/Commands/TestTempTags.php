@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Imanghafoori\Tags\Models\TempTag;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Artisan;
 
 class TestTempTags extends Command
 {
@@ -19,6 +20,7 @@ class TestTempTags extends Command
     public function handle(): void
     {
         config(['database.default' => 'test_mysql']);
+        Artisan::call('migrate:fresh');
         TempTag::query()->delete();
         $user = new User;
         $user->id = 1;
@@ -28,9 +30,11 @@ class TestTempTags extends Command
         $res = [
             tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned'),
+            tempTags($user)->getAllTags('banned')->isEmpty(),
             tempTags($user)->getActiveTag('banned'),
         ];
-        assert($res === [null, null, null]);
+
+        assert($res === [null, null, true, null]);
 
 
 # =================== test active tag =====================
@@ -42,9 +46,10 @@ class TestTempTags extends Command
             tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned')->isActive(),
+            tempTags($user)->getAllTags()->first()->title,
             tempTags($user)->getActiveTag('banned')->isPermanent()
         ];
-        assert($res === [null, true, true, false]);
+        assert($res === [null, true, true, 'banned', false]);
 
 # =================== test expired tag =====================
 
@@ -55,8 +60,9 @@ class TestTempTags extends Command
             tempTags($user)->getExpiredTag('banned')->isActive(),
             tempTags($user)->getTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned'),
+            tempTags($user)->getAllTags()->first()->title,
         ];
-        assert($res === [false, false, null]);
+        assert($res === [false, false, null, 'banned' ]);
 
 # =================== test deleted tag =====================
 
