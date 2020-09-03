@@ -20,7 +20,7 @@ class TestTempTags extends Command
     public function handle(): void
     {
         config(['database.default' => 'test_mysql']);
-        Artisan::call('migrate:fresh');
+//        Artisan::call('migrate:fresh');
         TempTag::query()->delete();
         $user = new User;
         $user->id = 1;
@@ -94,6 +94,7 @@ class TestTempTags extends Command
             tempTags($user)->getActiveTag('covid19'),
 
             tempTags($user)->getActiveTag('superman')->title,
+            tempTags($user)->getAllTags()->count(),
         ];
 
         assert($res === [
@@ -110,6 +111,7 @@ class TestTempTags extends Command
                 null,
 
                 'superman',
+                2
             ]);
 
 # =================== test deleted tag =====================
@@ -120,9 +122,10 @@ class TestTempTags extends Command
             tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned'),
             tempTags($user)->getActiveTag('banned'),
+            tempTags($user)->getAllTags()->isEmpty(),
         ];
 
-        assert($res === [null, null, null]);
+        assert($res === [null, null, null, true]);
 
         tempTags($user)->tagIt('banned');
         tempTags($user)->unTag('manned');
@@ -131,9 +134,10 @@ class TestTempTags extends Command
             tempTags($user)->getTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned')->isPermanent(),
+            tempTags($user)->getAllTags()->count(),
         ];
 
-        assert($res === [null, true, true, true]);
+        assert($res === [null, true, true, true, 1]);
 
 # =================== test expire tag =====================
 
@@ -142,9 +146,10 @@ class TestTempTags extends Command
             tempTags($user)->getExpiredTag('banned')->title,
             tempTags($user)->getTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned'),
+            tempTags($user)->getAllTags()->count(),
         ];
 
-        assert($res === ['banned', false, null,]);
+        assert($res === ['banned', false, null, 1,]);
 
 # ================== make permanent ======================
 
