@@ -4,9 +4,14 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTagsTable extends Migration
+class CreateBansTable extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
     {
         Schema::create('temp_tags', function (Blueprint $table) {
             $table->increments('id');
@@ -26,7 +31,12 @@ class CreateTagsTable extends Migration
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
     {
         Schema::dropIfExists('temp_tags');
     }
