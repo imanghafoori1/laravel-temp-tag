@@ -170,6 +170,35 @@ class TestTempTags extends Command
         assert(count($all) === 2);
         Event::assertDispatched('tmp_tagged:users,rut');
 
+# ================== fetching records ======================
+        \Codino\Models\User::query()->delete();
+        \Codino\Models\User::query()->insert(
+            [
+                'email' => 'iman@gmail.com',
+                'password' => bcrypt('111'),
+            ]
+        );
+        $user = \Codino\Models\User::where('email', 'iman@gmail.com')->first();
+        tempTags($user)->tagIt('banned');
+
+        $r = \Codino\Models\User::query()->hasActiveTempTags(['banned', 'aaa'])->first();
+        assert($r->email === 'iman@gmail.com');
+
+       $r = \Codino\Models\User::query()->hasTempTags(['banned', 'aaa'])->first();
+        assert($r->email === 'iman@gmail.com');
+
+        // expire the tag
+        tempTags($user)->expireNow('banned');
+
+        $r = \Codino\Models\User::query()->hasActiveTempTags(['banned', 'aaa'])->first();
+        assert(is_null($r));
+
+        $r = \Codino\Models\User::query()->hasExpiredTempTags(['banned', 'aaa'])->first();
+        assert($r->email === 'iman@gmail.com');
+
+        $r = \Codino\Models\User::query()->hasTempTags(['banned', 'aaa'])->first();
+        assert($r->email === 'iman@gmail.com');
+
         dd('Everything Is Ok.');
     }
 }
