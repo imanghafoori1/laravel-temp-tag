@@ -1,10 +1,6 @@
 # Eloquent Temp Tag
 
-
-
-Temporarily and Transparently, tag your eloquent models
-
-
+You want to ban a user for a week? Tag it as 'banned' for a week and check the tag in a middleware.
 
 ```
 
@@ -23,13 +19,9 @@ composer require imanghafoori/laravel-temp-tag
 - You wanna activate a Coupon code to be usable for a day.
 
 
-
-Then you put a temporary tag on them and check to see if the tag is 
-
-
+Then you put a temporary tag on them and check to see if the tag is there.
 
 and many other use cases.
-
 
 
 ### Keynotes:
@@ -38,15 +30,10 @@ and many other use cases.
 
 - We do not touch your existing tables in migrations.
 
-- There is no need to put traits on your models.
-
 - You can put tag on any eloquent model or any other object with `id` property and unique returning `getTable` method.
 
 
-
 ### Usage:
-
-
 
 1- Tag it until tomorrow
 
@@ -69,38 +56,25 @@ and many other use cases.
 2- After an hour the tag is still active, so:
 
 ```php
+  $tagObj = tempTags($user)->getTag('banned');
 
-    $tagObj = tempTags($user)->getTag('banned');
-
-    
-
-    $tagObj->isActive();        // true
-
-    $tagObj->isPermanent();     // false
-
-    $tagObj->title === 'banned' // true
-
-    $tagObj->expiresAt();       // Carbon instance
+  $tagObj->isActive();        // true
+  $tagObj->isPermanent();     // false
+  $tagObj->title === 'banned' // true
+  $tagObj->expiresAt();       // Carbon instance
 
 ```
-
-
 
 3- After a week the tag is died out, so:
 
 ```php
 
-    $tagObj = tempTags($user)->getTag('banned');
+  $tagObj = tempTags($user)->getTag('banned');
 
-
-
-    $tagObj->isActive();        // false
-
-    $tagObj->isPermanent();     // false
-
-    $tagObj->title === 'banned' // true
-
-    $tagObj->expiresAt();       // Carbon instance
+  $tagObj->isActive();        // false
+  $tagObj->isPermanent();     // false
+  $tagObj->title === 'banned' // true
+  $tagObj->expiresAt();       // Carbon instance
 
 ```
 
@@ -110,13 +84,11 @@ Deleting tags:
 
 ```php
 
-    tempTags($user)->unTag('banned');          // single string
+  tempTags($user)->unTag('banned');          // single string
 
-    tempTags($user)->unTag(['banned', 'man']); // an array of tags to delete
+  tempTags($user)->unTag(['banned', 'man']); // an array of tags to delete
 
-    
-
-    tempTags($user)->deleteExpiredTags();     // all the expited tags, bye bye.
+  tempTags($user)->deleteExpiredTags();     // all the expited tags, bye bye.
 
 ```
 
@@ -127,7 +99,7 @@ Manually expire the tag with title of "banned":
 
 ```php
 
-   tempTags($user)->expireNow('banned');      // updates the value of "expire_at" to now()
+ tempTags($user)->expireNow('banned');      // updates the value of "expire_at" to now()
 
 ```
 
@@ -136,14 +108,28 @@ These methods just do what they say:
 
 ```php
 
-    $actives = tempTags($user)->getAllActiveTags();
+  $actives = tempTags($user)->getAllActiveTags();
 
-    $expired = tempTags($user)->getAllExpiredTags();
+  $expired = tempTags($user)->getAllExpiredTags();
 
-    $expired = tempTags($user)->getAllTags();
+  $expired = tempTags($user)->getAllTags();
 
 ```
 
+### Fetch only tagged records:
+
+Lets say you have a slider for your `Product` model and you want to show only those records which are tagged with 'slider'.
+
+First you have to put `Imanghafoori\Tags\Traits\hasTempTags` trait on the `Product` model
+
+Now you can perform this query:
+```php
+Product::hasActiveTempTags(['slider'])->where(...)->get();
+
+// or
+Product::hasExpiredTempTags(...)   // To fetch only of the tag is expired.
+Product::hasTempTags(...)          // To fetch regardless of expiration date of tags
+```
 
 --------------------
 
