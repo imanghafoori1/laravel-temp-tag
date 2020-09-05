@@ -132,8 +132,8 @@ class Product extends Model
 Product::hasActiveTempTags('slider')->where(...)->get();
 
 // or
-Product::hasExpiredTempTags(...)   // To fetch only of the tag is expired.
-Product::hasTempTags(...)          // To fetch regardless of expiration date of tags
+Product::hasExpiredTempTags(...)   // Only if the tag of model is expired and it has the specified titie.
+Product::hasTempTags(...)          // To fetch regardless of expiration date of tags, only the title matters.
 ```
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
