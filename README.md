@@ -30,12 +30,12 @@ and many other use cases.
 
 - We do not touch your existing tables in migrations.
 
-- You can put tag on any eloquent model or any other object with `id` property and unique returning `getTable` method.
+- You can put tag on any eloquent model or any other object with `getKey` and `getTable` methods.
 
 
-### Usage:
+### Example Usage:
 
-1- Tag it until tomorrow
+1- Tag the user until tomorrow
 
 ```php
 
@@ -43,19 +43,16 @@ and many other use cases.
 
   $tomorrow = Carbon::now()->addDay();
 
-
-
   tempTags($user)->tagIt('banned', $tomorrow); 
 
-  tempTags($user)->tagIt('banned', null);   // Converts to Permanent ban !
+  tempTags($user)->tagIt('banned');   // Overrides it to Permanent ban!
 
 ```
-
-
 
 2- After an hour the tag is still active, so:
 
 ```php
+  $user = User::find(1);
   $tagObj = tempTags($user)->getTag('banned');
 
   $tagObj->isActive();        // true
@@ -65,10 +62,10 @@ and many other use cases.
 
 ```
 
-3- After a week the tag is died out, so:
+3- After a week the tag is expired out, so:
 
 ```php
-
+  $user = User::find(1);
   $tagObj = tempTags($user)->getTag('banned');
 
   $tagObj->isActive();        // false
@@ -78,9 +75,7 @@ and many other use cases.
 
 ```
 
-
-
-Deleting tags:
+#### Deleting tags:
 
 ```php
 
@@ -92,7 +87,7 @@ Deleting tags:
 
 ```
 
-These fire "deleting" and "deleted" eloquent events for each and every one of them.
+**Note:** These fire "deleting" and "deleted" eloquent events for each and every one of them.
 
 
 Manually expire the tag with title of "banned":
@@ -116,7 +111,7 @@ These methods just do what they say:
 
 ```
 
-### Fetch only tagged records:
+### Fetch only tagged models:
 
 Lets say you have a slider for your `Product` model and you want to show only those records which are tagged with 'slider'.
 
@@ -124,12 +119,24 @@ First you have to put `Imanghafoori\Tags\Traits\hasTempTags` trait on the `Produ
 
 Now you can perform this query:
 ```php
-Product::hasActiveTempTags(['slider'])->where(...)->get();
+
+class Product extends Model 
+{
+  use hasTempTags;
+  
+  ...
+}
+```
+
+```php
+Product::hasActiveTempTags('slider')->where(...)->get();
 
 // or
 Product::hasExpiredTempTags(...)   // To fetch only of the tag is expired.
 Product::hasTempTags(...)          // To fetch regardless of expiration date of tags
 ```
+
+**Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
 
 --------------------
 
