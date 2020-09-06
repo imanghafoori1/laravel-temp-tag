@@ -1,14 +1,15 @@
-# Eloquent Temp Tag
+# Laravel Temp Tag
 
 You want to ban a user for a week? Tag it as 'banned' for a week and check the tag in a middleware.
+
+
+### Installation:
 
 ```
 
 composer require imanghafoori/laravel-temp-tag
 
 ```
-
-
 
 ### Use cases:
 
@@ -18,10 +19,10 @@ composer require imanghafoori/laravel-temp-tag
 
 - You wanna activate a Coupon code to be usable for a day.
 
+- Promote a product in an slider for week.
+
 
 Then you put a temporary tag on them and check to see if the tag is there.
-
-and many other use cases.
 
 
 ### Keynotes:
@@ -131,9 +132,11 @@ class Product extends Model
 ```php
 Product::hasActiveTempTags('slider')->where(...)->get();
 
-// or
-Product::hasExpiredTempTags(...)   // Only if the tag of model is expired and it has the specified titie.
-Product::hasTempTags(...)          // To fetch regardless of expiration date of tags, only the title matters.
+// Only if the tag of model is expired and it has the specified titie.
+Product::hasExpiredTempTags(...)   
+
+// To fetch regardless of expiration date of tags, only the title matters.
+Product::hasTempTags(...)          
 ```
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
