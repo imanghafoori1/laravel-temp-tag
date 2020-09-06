@@ -27,7 +27,7 @@ class CreateTagsTable extends Migration
             $table->softDeletes();
             $table->timestamp('created_at')->nullable();
 
-            $table->unique(['taggable_type', 'taggable_id', 'title']);
+            $table->unique(['taggable_type', 'taggable_id', 'title', 'deleted_at']);
         });
     }
 
