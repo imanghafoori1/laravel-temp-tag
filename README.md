@@ -79,7 +79,8 @@ Then you put a temporary tag on them and check to see if the tag is there.
 #### Deleting tags:
 
 ```php
-
+  $user = User::find(1);
+  
   tempTags($user)->unTag('banned');          // single string
 
   tempTags($user)->unTag(['banned', 'man']); // an array of tags to delete
@@ -91,7 +92,7 @@ Then you put a temporary tag on them and check to see if the tag is there.
 **Note:** These fire "deleting" and "deleted" eloquent events for each and every one of them.
 
 
-Manually expire the tag with title of "banned":
+Expire the tag with title of "banned" right now:
 
 ```php
 
@@ -133,10 +134,10 @@ class Product extends Model
 Product::hasActiveTempTags('slider')->where(...)->get();
 
 // Only if the tag of model is expired and it has the specified titie.
-Product::hasExpiredTempTags(...)   
+Product::hasExpiredTempTags('slider')->where(...)->get();
 
 // To fetch regardless of expiration date of tags, only the title matters.
-Product::hasTempTags(...)          
+Product::hasTempTags('slider')->where(...)->get();
 ```
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
