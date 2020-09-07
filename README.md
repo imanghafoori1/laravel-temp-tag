@@ -105,11 +105,11 @@ These methods just do what they say:
 
 ```php
 
-  $actives = tempTags($user)->getAllActiveTags();
+  $actives = tempTags($user)->getAllActiveTags();  // A collect of "TempTag" model objects.
 
   $expired = tempTags($user)->getAllExpiredTags();
 
-  $expired = tempTags($user)->getAllTags();
+  $all = tempTags($user)->getAllTags();
 
 ```
 
@@ -119,7 +119,6 @@ Lets say you have a slider for your `Product` model and you want to show only th
 
 First you have to put `Imanghafoori\Tags\Traits\hasTempTags` trait on the `Product` model
 
-Now you can perform this query:
 ```php
 
 class Product extends Model 
@@ -129,6 +128,8 @@ class Product extends Model
   ...
 }
 ```
+
+Now you can perform these queries:
 
 ```php
 Product::hasActiveTempTags('slider')->where(...)->get();
