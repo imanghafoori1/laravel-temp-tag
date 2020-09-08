@@ -13,16 +13,16 @@ composer require imanghafoori/laravel-temp-tag
 
 ### Use cases:
 
-- You wanna ban a user but only for a week as punishment.
+- You wanna ban a user, only for a week.
 
-- You wanna give someone VIP access but for only a month.
+- You wanna give someone VIP access only for a month.
 
-- You wanna activate a Coupon code to be usable for a day.
+- You wanna a Coupon code to be usable for until tomorrow.
 
-- Promote a product in an slider for week.
+- You wanna put a product in an slider for week.
 
 
-Then you put a temporary tag on them and check to see if the tag is there.
+Then you put a temporary tag on them and check to see if the model has the tag.
 
 
 ### Keynotes:
@@ -31,12 +31,12 @@ Then you put a temporary tag on them and check to see if the tag is there.
 
 - We do not touch your existing tables in migrations.
 
-- You can put tag on any eloquent model or any other object with `getKey` and `getTable` methods.
+- You can put tag on any eloquent model or any other object with `getKey` and `getTable` methods on it.
 
 
 ### Example Usage:
 
-1- Tag the user until tomorrow
+1- Tag a user until tomorrow
 
 ```php
 
@@ -44,6 +44,7 @@ Then you put a temporary tag on them and check to see if the tag is there.
 
   $tomorrow = Carbon::now()->addDay();
 
+  // You have to pass it to the `tempTags` global helper function.
   tempTags($user)->tagIt('banned', $tomorrow); 
 
   tempTags($user)->tagIt('banned');   // Overrides it to Permanent ban!
@@ -152,17 +153,9 @@ If you find an issue or have a better way to do something, feel free to open an 
 
 If you use laravel-widgetize in your open source project, create a pull request to provide its URL as a sample application in the README.md file. 
 
-
-
-### :exclamation: Security:
-
-If you discover any security-related issues, please use the `security tab` instead of using the issue tracker.
-
-
-
 ### :star: Your Stars Make Us Do More :star:
 
-As always if you found this package useful and you want to encourage us to maintain and work on it. Just press the star button to declare your willingness.
+As always if you found this package useful and you want to encourage us to maintain and work on it, just press the star button to declare your willingness.
 
 
 ## More from the author:
@@ -170,14 +163,9 @@ As always if you found this package useful and you want to encourage us to maint
 
 ### Laravel Microscope
 
-
 :gem: It automatically find bugs in your laravel app
 
-
-
 - https://github.com/imanghafoori1/laravel-microscope
-
-
 
 -------------
 
@@ -185,9 +173,7 @@ As always if you found this package useful and you want to encourage us to maint
 
 :gem: It allows you to write expressive code to authorize, validate, and authenticate.
 
-
 - https://github.com/imanghafoori1/laravel-heyman
-
 
 --------------
 
