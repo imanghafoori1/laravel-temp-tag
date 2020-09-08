@@ -7,7 +7,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Imanghafoori\Tags\Models\TempTag;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Artisan;
 
 class TestTempTags extends Command
 {

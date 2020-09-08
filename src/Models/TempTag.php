@@ -26,7 +26,7 @@ class TempTag extends Model
      */
     protected $fillable = [
         'title',
-        'comment',
+        'note',
         'expired_at',
         'taggable_type',
         'taggable_id',
@@ -41,21 +41,6 @@ class TempTag extends Model
         'expired_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-
-    /**
-     * Expired timestamp mutator.
-     *
-     * @param \Illuminate\Support\Carbon|string $value
-     * @return void
-     */
-    public function _setExpiredAtAttribute($value): void
-    {
-        if (!is_null($value) && !$value instanceof Carbon) {
-            $value = Carbon::parse($value);
-        }
-
-        $this->attributes['expired_at'] = $value;
-    }
 
     public function taggable(): MorphTo
     {
@@ -92,16 +77,16 @@ class TempTag extends Model
         return ! $this->isPermanent();
     }
 
-    public function tagTitle(string $tag)
-    {
-        return $this->where('title', $tag);
-    }
-
     public function scopeWhereTaggable(Builder $query, $taggable): Builder
     {
         return $query->where([
             'taggable_type' => $taggable->getMorphClass(),
             'taggable_id' => $taggable->getKey(),
         ]);
+    }
+
+    public function __toString()
+    {
+        return $this->getAttribute('title');
     }
 }
