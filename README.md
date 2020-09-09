@@ -144,6 +144,19 @@ Product::hasTempTags('slider')->where(...)->get();
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
 
+### Scheduling
+After you have performed the basic installation you can start using the tag:delete-expired command. In most cases you'll want to schedule this command so you don't have to manually run it everytime you need to delete expired tags.
+
+The command can be scheduled in Laravel's console kernel, just like any other command.
+
+```php
+// app/Console/Kernel.php
+
+protected function schedule(Schedule $schedule)
+{
+    $schedule->command('tag:delete-expired')->everyDay();
+}
+```
 --------------------
 
 
