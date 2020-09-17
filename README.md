@@ -24,6 +24,7 @@ composer require imanghafoori/laravel-temp-tag
 
 Then you put a temporary tag on them and check to see if the model has the tag.
 
+**Note:** You can also store some additional json data, for example why the user was banned, or who banned the user.
 
 ### Keynotes:
 
@@ -41,14 +42,14 @@ Then you put a temporary tag on them and check to see if the model has the tag.
 ```php
 
   $user = User::find(1);
-
   $tomorrow = Carbon::now()->addDay();
+  $note = ['reason' => 'You were nasty!']; // You can optionally store additional data in a json column.
 
-  // You have to pass it to the `tempTags` global helper function.
-  tempTags($user)->tagIt('banned', $tomorrow); 
+  // Tagging the User:
+  tempTags($user)->tagIt('banned', $tomorrow, $note);
 
-  tempTags($user)->tagIt('banned');   // Overrides it to Permanent ban!
-
+  // Or the minimal way:
+  tempTags($user)->tagIt('banned');  // will never expire
 ```
 
 2- After an hour the tag is still active, so:
@@ -61,8 +62,16 @@ Then you put a temporary tag on them and check to see if the model has the tag.
   $tagObj->isPermanent();     // false
   $tagObj->title === 'banned' // true
   $tagObj->expiresAt();       // Carbon instance
-
 ```
+
+Getting payload data:
+
+```php
+  $tagObj->getPayload('reason');    //  'hostile activity!'      
+  $tagObj->getPayload();            //  ['reason' => 'You were nasty!'] 
+  $tagObj->getPayload('missing_key');  //  null
+```
+
 
 3- After a week the tag is expired out, so:
 
