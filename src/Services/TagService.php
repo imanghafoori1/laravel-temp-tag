@@ -63,7 +63,7 @@ class TagService
         return $this->getTagQuery($tag)->where('expired_at', '<', self::$maxLifeTime)->first() ?: false;
     }
 
-    public function tagIt($tag, $carbon = null, $eventName = null)
+    public function tagIt($tag, $carbon = null, $payload = null, $eventName = null)
     {
         $data = $this->getTaggableWhere();
         $exp = $this->expireDate($carbon);
@@ -71,7 +71,7 @@ class TagService
         $new_tags = [];
         foreach ((array)$tag as $tg) {
             $data['title'] = $tg;
-            $new_tags[] = $tagObj = TempTag::query()->updateOrCreate($data, $data + $exp);
+            $new_tags[] = $tagObj = TempTag::query()->updateOrCreate($data, $data + $exp + ['payload' => $payload]);
             $this->fireEvent($eventName, $tagObj);
         }
 

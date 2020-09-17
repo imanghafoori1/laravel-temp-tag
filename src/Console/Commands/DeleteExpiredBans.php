@@ -21,8 +21,6 @@ class DeleteExpiredBans extends Command
      */
     protected $description = 'Delete expired temporary tag models.';
 
-    protected $service;
-
     /**
      * Execute the console command.
      *

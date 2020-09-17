@@ -26,7 +26,7 @@ class TempTag extends Model
      */
     protected $fillable = [
         'title',
-        'note',
+        'payload',
         'expired_at',
         'taggable_type',
         'taggable_id',
@@ -40,6 +40,7 @@ class TempTag extends Model
     protected $casts = [
         'expired_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'payload' => 'json',
     ];
 
     public function taggable(): MorphTo
@@ -55,6 +56,11 @@ class TempTag extends Model
     public function expiresAt(): Carbon
     {
         return $this->expired_at;
+    }
+
+    public function getPayload($key = null)
+    {
+        return ($key === null) ? $this->payload : ($this->payload[$key] ?? null);
     }
 
     /**

@@ -12,9 +12,7 @@ class TestTempTags extends Command
 {
     protected $signature = 'tag:test';
 
-    protected $description = 'Delete expired temporary tag models.';
-
-    protected $service;
+    protected $description = 'test functionality of package';
 
     public function handle(): void
     {
