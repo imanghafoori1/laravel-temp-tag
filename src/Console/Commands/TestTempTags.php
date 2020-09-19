@@ -3,10 +3,10 @@
 namespace Imanghafoori\Tags\Console\Commands;
 
 use Codino\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
-use Imanghafoori\Tags\Models\TempTag;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use Imanghafoori\Tags\Models\TempTag;
 
 class TestTempTags extends Command
 {
@@ -19,10 +19,10 @@ class TestTempTags extends Command
         config(['database.default' => 'test_mysql']);
 //        Artisan::call('migrate:fresh');
         TempTag::query()->delete();
-        $user = new User;
+        $user = new User();
         $user->id = 1;
 
-# =================== test no tag =====================
+        // =================== test no tag =====================
 
         $res = [
             tempTags($user)->getExpiredTag('banned'),
@@ -33,8 +33,7 @@ class TestTempTags extends Command
 
         assert($res === [null, null, true, null]);
 
-
-# =================== test active tag =====================
+        // =================== test active tag =====================
 
         $tomorrow = Carbon::now()->addDay();
         tempTags($user)->tagIt('banned', $tomorrow);
@@ -44,11 +43,11 @@ class TestTempTags extends Command
             tempTags($user)->getTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned')->isActive(),
             tempTags($user)->getAllTags()->first()->title,
-            tempTags($user)->getActiveTag('banned')->isPermanent()
+            tempTags($user)->getActiveTag('banned')->isPermanent(),
         ];
         assert($res === [null, true, true, 'banned', false]);
 
-# =================== test expired tag =====================
+        // =================== test expired tag =====================
 
         // travel through time
         Carbon::setTestNow(Carbon::now()->addDay()->addMinute());
@@ -59,9 +58,9 @@ class TestTempTags extends Command
             tempTags($user)->getActiveTag('banned'),
             tempTags($user)->getAllTags()->first()->title,
         ];
-        assert($res === [false, false, null, 'banned' ]);
+        assert($res === [false, false, null, 'banned']);
 
-# =================== test deleted tag =====================
+        // =================== test deleted tag =====================
 
         tempTags($user)->unTag('banned');
         $res = [
@@ -72,7 +71,7 @@ class TestTempTags extends Command
 
         assert($res === [null, null, null]);
 
-# =================== test deleted tag =====================
+        // =================== test deleted tag =====================
 
         tempTags($user)->tagIt(['banned', 'man', 'superman', 'covid19']);
         tempTags($user)->tagIt('covid19', Carbon::now()->subSeconds(1));
@@ -95,23 +94,23 @@ class TestTempTags extends Command
         ];
 
         assert($res === [
-                null,
-                null,
-                null,
+            null,
+            null,
+            null,
 
-                null,
-                null,
-                null,
+            null,
+            null,
+            null,
 
-                'covid19',
-                'covid19',
-                null,
+            'covid19',
+            'covid19',
+            null,
 
-                'superman',
-                2
-            ]);
+            'superman',
+            2,
+        ]);
 
-# =================== test deleted tag =====================
+        // =================== test deleted tag =====================
 
         tempTags($user)->tagIt('banned');
         tempTags($user)->unTag();
@@ -136,7 +135,7 @@ class TestTempTags extends Command
 
         assert($res === [null, true, true, true, 1]);
 
-# =================== test expire tag =====================
+        // =================== test expire tag =====================
 
         tempTags($user)->expireNow('banned');
         $res = [
@@ -146,14 +145,14 @@ class TestTempTags extends Command
             tempTags($user)->getAllTags()->count(),
         ];
 
-        assert($res === ['banned', false, null, 1,]);
+        assert($res === ['banned', false, null, 1]);
 
-# ================== make permanent ======================
+        // ================== make permanent ======================
 
         $tags = tempTags($user)->tagIt('banned', Carbon::now()->addDay());
         tempTags($user)->getTag('banned')->expiresAt();
 
-# ================== make permanent ======================
+        // ================== make permanent ======================
         tempTags($user)->unTag();
         tempTags($user)->tagIt(['banned']);
         Event::fake();
@@ -167,11 +166,11 @@ class TestTempTags extends Command
         assert(count($all) === 2);
         Event::assertDispatched('tmp_tagged:users,rut');
 
-# ================== fetching records ======================
+        // ================== fetching records ======================
         \Codino\Models\User::query()->delete();
         \Codino\Models\User::query()->insert(
             [
-                'email' => 'iman@gmail.com',
+                'email'    => 'iman@gmail.com',
                 'password' => bcrypt('111'),
             ]
         );
@@ -181,7 +180,7 @@ class TestTempTags extends Command
         $r = \Codino\Models\User::query()->hasActiveTempTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
-       $r = \Codino\Models\User::query()->hasTempTags(['banned', 'aaa'])->first();
+        $r = \Codino\Models\User::query()->hasTempTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
         // expire the tag
