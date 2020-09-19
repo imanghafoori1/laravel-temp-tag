@@ -26,7 +26,7 @@ Then you put a temporary tag on them and check to see if the model has the tag.
 
 **Note:**
 
-You can also store some additional json data, for example why the user was banned, or who banned the user, or an slug or a translation.
+You can also store some additional json data, for example why the user was banned, or who banned the user, or an slug or a translation of the title.
 
 ### Keynotes:
 
