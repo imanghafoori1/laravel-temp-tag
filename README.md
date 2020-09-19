@@ -1,13 +1,19 @@
 # Laravel Temp Tag
 
-You want to ban a user for a week? Tag it as 'banned' for a week and check the tag in a middleware.
+**You want to ban a user for a week? Tag it as 'banned' for a week and check the tag in a middleware.**
+
+![image](https://user-images.githubusercontent.com/6961695/93660285-6a935180-fa62-11ea-98ca-5a7675c6bd6a.png)
+
 
 [![Latest Stable Version](https://poser.pugx.org/imanghafoori/laravel-temp-tag/v/stable)](https://packagist.org/packages/imanghafoori/laravel-temp-tag)
+[![Build Status](https://scrutinizer-ci.com/g/imanghafoori1/laravel-temp-tag/badges/build.png?b=master)](https://scrutinizer-ci.com/g/imanghafoori1/laravel-temp-tag/build-status/master)
 [![Total Downloads](https://poser.pugx.org/imanghafoori/laravel-temp-tag/downloads)](https://packagist.org/packages/imanghafoori/laravel-temp-tag/stats)
-[![StyleCI](https://github.styleci.io/repos/291741669/shield?branch=master)](https://github.styleci.io/repos/291741669?branch=master)
+[![StyleCI](https://github.styleci.io/repos/291741669/shield?branch=master&style=round-square)](https://github.styleci.io/repos/291741669?branch=master&style=round-square)
 <a href="https://scrutinizer-ci.com/g/imanghafoori1/laravel-temp-tag"><img src="https://img.shields.io/scrutinizer/g/imanghafoori1/laravel-temp-tag.svg?style=round-square" alt="Quality Score"></img></a>
 [![Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=round-square)](LICENSE.md)
 
+<br>
+<br>
 
 ### Installation:
 
@@ -30,7 +36,7 @@ composer require imanghafoori/laravel-temp-tag
 
 Then you put a temporary tag on them and check to see if the model has the tag.
 
-**Note:**
+### Tag Payload:
 
 You can also store some additional json data, for example why the user was banned, or who banned the user, or an slug or a translation of the title.
 
