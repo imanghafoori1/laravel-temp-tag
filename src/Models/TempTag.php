@@ -48,6 +48,20 @@ class TempTag extends Model
         return $this->morphTo('taggable');
     }
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleted(function ($model) {
+            cache()->delete($model->getCacheKey());
+        });
+    }
+
+    public function getCacheKey()
+    {
+        return 'temp_tag:'.$this->taggable_type.$this->taggable_id.','.$this->title;
+    }
+
     public function isActive()
     {
         return $this->expired_at->getTimestamp() > Carbon::now()->getTimestamp();

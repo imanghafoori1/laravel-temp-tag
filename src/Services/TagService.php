@@ -20,7 +20,8 @@ class TagService
 
     public function getActiveTag(string $tag)
     {
-        return $this->getTagQuery($tag)->where('expired_at', '>', $this->now())->first() ?: null;
+        return cache()->get($this->getCacheKey($tag));
+//        return $this->getActiveTagFromDB($tag);
     }
 
     public function getTag(string $tag): ?TempTag
@@ -58,21 +59,17 @@ class TagService
         return $this->getTagQuery($tag)->where('expired_at', '<', $this->now())->first();
     }
 
-    public function isPermanent(string $tag)
-    {
-        return $this->getTagQuery($tag)->where('expired_at', '<', self::$maxLifeTime)->first() ?: false;
-    }
-
-    public function tagIt($tag, $carbon = null, $payload = null, $eventName = null)
+    public function tagIt($tag, $expDate = null, $payload = null, $eventName = null)
     {
         $data = $this->getTaggableWhere();
-        $exp = $this->expireDate($carbon);
+        $exp = $this->expireDate($expDate);
 
         $new_tags = [];
         foreach ((array) $tag as $tg) {
             $data['title'] = $tg;
             $new_tags[] = $tagObj = TempTag::query()->updateOrCreate($data, $data + $exp + ['payload' => $payload]);
             $this->fireEvent($eventName, $tagObj);
+            $this->putInCache($tg, $expDate, $tagObj);
         }
 
         return $new_tags;
@@ -149,5 +146,29 @@ class TagService
     private function getTagQuery(string $tag)
     {
         return $this->query()->where('title', $tag);
+    }
+
+    private function getCacheKey($title)
+    {
+        return 'temp_tag:'.$this->model->getTable().$this->model->getKey().','.$title;
+    }
+
+    private function putInCache($tg, $expDate, $tagObj)
+    {
+        $key = $this->getCacheKey($tg);
+        if (is_null($expDate)) {
+            return cache()->forever($key, $tagObj);
+        }
+
+        if ($expDate->timestamp < now()->timestamp) {
+            cache()->delete($key);
+        } else {
+            cache()->put($key, $tagObj, $expDate);
+        }
+    }
+
+    private function getActiveTagFromDB($tag)
+    {
+        return $this->getTagQuery($tag)->where('expired_at', '>', $this->now())->first() ?: null;
     }
 }
