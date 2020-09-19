@@ -80,7 +80,7 @@ class TempTag extends Model
      */
     public function isTemporary(): bool
     {
-        return !$this->isPermanent();
+        return ! $this->isPermanent();
     }
 
     public function scopeWhereTaggable(Builder $query, $taggable): Builder
