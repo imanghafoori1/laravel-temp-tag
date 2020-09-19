@@ -126,7 +126,7 @@ Expire the tag with title of "banned" right now:
 
 ```php
 
- tempTags($user)->expireNow('banned');    // updates the value of "expire_at" to now(), deletes from cache store.
+ tempTags($user)->expireNow('banned');  // updates the value of "expire_at" to now() and deletes from cache.
 
 ```
 
