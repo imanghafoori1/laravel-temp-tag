@@ -60,7 +60,6 @@ You can also store some additional json data, for example why the user was banne
   // Or the minimal way:
   tempTags($user)->tagIt('banned');  // will never expire
 ```
---------------
 
 2- After an hour the tag is still active, so:
 
@@ -74,14 +73,6 @@ You can also store some additional json data, for example why the user was banne
   $tagObj->expiresAt();       // Carbon instance
 ```
 
-Getting payload data:
-
-```php
-  $tagObj->getPayload('reason');    //  'hostile activity!'      
-  $tagObj->getPayload();            //  ['reason' => 'You were nasty!'] 
-  $tagObj->getPayload('missing_key');  //  null
-```
---------------
 
 3- After a week the tag is expired out, so:
 
@@ -95,6 +86,16 @@ Getting payload data:
   $tagObj->expiresAt();       // Carbon instance
 
 ```
+--------------
+
+Getting payload data:
+
+```php
+  $tagObj->getPayload('reason');    //  'hostile activity!'      
+  $tagObj->getPayload();            //  ['reason' => 'You were nasty!'] 
+  $tagObj->getPayload('missing_key');  //  null
+```
+
 --------------
 
 #### Deleting tags:
@@ -121,6 +122,7 @@ Expire the tag with title of "banned" right now:
 
 ```
 
+-------------
 
 These methods just do what they say:
 
@@ -133,6 +135,8 @@ These methods just do what they say:
   $all = tempTags($user)->getAllTags();
 
 ```
+
+-------------
 
 ### Fetch only tagged models:
 
@@ -164,6 +168,8 @@ Product::hasTempTags('slider')->where(...)->get();
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
 
+-------------
+
 ### Auto-delete Expired tags:
 
 After you have performed the basic installation you can start using the tag:delete-expired command. In most cases you'll want to schedule this command so you don't have to manually run it everytime you need to delete expired tags.
@@ -191,6 +197,7 @@ If you use laravel-widgetize in your open source project, create a pull request 
 
 As always if you found this package useful and you want to encourage us to maintain and work on it, just press the star button to declare your willingness.
 
+-------------
 
 ## More from the author:
 
@@ -201,7 +208,7 @@ As always if you found this package useful and you want to encourage us to maint
 
 - https://github.com/imanghafoori1/laravel-microscope
 
--------------
+
 
 ### Laravel HeyMan
 
