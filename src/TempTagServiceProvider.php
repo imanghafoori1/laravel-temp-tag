@@ -25,7 +25,7 @@ class TempTagServiceProvider extends ServiceProvider
 
         Builder::macro('hasActiveTempTags', function ($title) {
             $table = $this->getModel()->getTable();
-            if (!in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
                 TempTagServiceProvider::$registeredRelation[] = $table;
                 Relation::morphMap([
                     $table => get_class($this->getModel()),
@@ -39,7 +39,7 @@ class TempTagServiceProvider extends ServiceProvider
 
         Builder::macro('hasExpiredTempTags', function ($title) {
             $table = $this->getModel()->getTable();
-            if (!in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
                 TempTagServiceProvider::$registeredRelation[] = $table;
                 Relation::morphMap([
                     $table => get_class($this->getModel()),
@@ -53,7 +53,7 @@ class TempTagServiceProvider extends ServiceProvider
 
         Builder::macro('hasTempTags', function ($title) {
             $table = $this->getModel()->getTable();
-            if (!in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
                 TempTagServiceProvider::$registeredRelation[] = $table;
 
                 Relation::morphMap([$table => get_class($this->getModel())]);
@@ -147,7 +147,7 @@ class TempTagServiceProvider extends ServiceProvider
      */
     private function configure(): void
     {
-        if (!$this->app->configurationIsCached()) {
+        if (! $this->app->configurationIsCached()) {
             $this->mergeConfigFrom(__DIR__.'/../config/temp_tag.php', 'tag');
         }
     }
