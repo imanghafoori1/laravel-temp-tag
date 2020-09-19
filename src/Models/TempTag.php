@@ -2,9 +2,9 @@
 
 namespace Imanghafoori\Tags\Models;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class TempTag extends Model
 {
@@ -40,7 +40,7 @@ class TempTag extends Model
     protected $casts = [
         'expired_at' => 'datetime',
         'deleted_at' => 'datetime',
-        'payload' => 'json',
+        'payload'    => 'json',
     ];
 
     public function taggable(): MorphTo
@@ -80,14 +80,14 @@ class TempTag extends Model
      */
     public function isTemporary(): bool
     {
-        return ! $this->isPermanent();
+        return !$this->isPermanent();
     }
 
     public function scopeWhereTaggable(Builder $query, $taggable): Builder
     {
         return $query->where([
             'taggable_type' => $taggable->getMorphClass(),
-            'taggable_id' => $taggable->getKey(),
+            'taggable_id'   => $taggable->getKey(),
         ]);
     }
 

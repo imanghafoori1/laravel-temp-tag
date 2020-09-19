@@ -2,7 +2,7 @@
 
 use Imanghafoori\Tags\Services\TagService;
 
-if (! function_exists('tempTags')) {
+if (!function_exists('tempTags')) {
     function tempTags($model): TagService
     {
         $tagService = new TagService();

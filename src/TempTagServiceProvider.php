@@ -2,17 +2,17 @@
 
 namespace Imanghafoori\Tags;
 
-use Imanghafoori\Tags\Models\TempTag;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
-use Imanghafoori\Tags\Observers\TempTagObserver;
-use Imanghafoori\Tags\Console\Commands\TestTempTags;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\ServiceProvider;
 use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
+use Imanghafoori\Tags\Console\Commands\TestTempTags;
+use Imanghafoori\Tags\Models\TempTag;
+use Imanghafoori\Tags\Observers\TempTagObserver;
 
 class TempTagServiceProvider extends ServiceProvider
 {
-    static $registeredRelation = [];
+    public static $registeredRelation = [];
 
     /**
      * Register bindings in the container.
@@ -25,7 +25,7 @@ class TempTagServiceProvider extends ServiceProvider
 
         Builder::macro('hasActiveTempTags', function ($title) {
             $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            if (!in_array($table, TempTagServiceProvider::$registeredRelation)) {
                 TempTagServiceProvider::$registeredRelation[] = $table;
                 Relation::morphMap([
                     $table => get_class($this->getModel()),
@@ -39,7 +39,7 @@ class TempTagServiceProvider extends ServiceProvider
 
         Builder::macro('hasExpiredTempTags', function ($title) {
             $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            if (!in_array($table, TempTagServiceProvider::$registeredRelation)) {
                 TempTagServiceProvider::$registeredRelation[] = $table;
                 Relation::morphMap([
                     $table => get_class($this->getModel()),
@@ -53,10 +53,10 @@ class TempTagServiceProvider extends ServiceProvider
 
         Builder::macro('hasTempTags', function ($title) {
             $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            if (!in_array($table, TempTagServiceProvider::$registeredRelation)) {
                 TempTagServiceProvider::$registeredRelation[] = $table;
 
-                Relation::morphMap([$table => get_class($this->getModel()),]);
+                Relation::morphMap([$table => get_class($this->getModel())]);
             }
 
             return $this->whereHas('tempTags', function ($q) use ($title) {
@@ -68,9 +68,9 @@ class TempTagServiceProvider extends ServiceProvider
     /**
      * Perform post-registration booting of services.
      *
-     * @return void
-     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     *
+     * @return void
      */
     public function boot(): void
     {
@@ -91,7 +91,7 @@ class TempTagServiceProvider extends ServiceProvider
 
             $this->commands([
                 'command.tag:delete-expired',
-                TestTempTags::class
+                TestTempTags::class,
             ]);
         }
     }
@@ -99,13 +99,13 @@ class TempTagServiceProvider extends ServiceProvider
     /**
      * Register Ban's models observers.
      *
-     * @return void
-     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     *
+     * @return void
      */
     protected function registerObservers(): void
     {
-        $this->app->make(TempTag::class)->observe(new TempTagObserver);
+        $this->app->make(TempTag::class)->observe(new TempTagObserver());
     }
 
     /**
@@ -117,11 +117,11 @@ class TempTagServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/temp_tag.php' => config_path('tag.php'),
+                __DIR__.'/../config/temp_tag.php' => config_path('tag.php'),
             ], 'tag-config');
 
             $this->publishes([
-                __DIR__ . '/../database/migrations' => database_path('migrations'),
+                __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'migrations');
         }
 
@@ -136,7 +136,7 @@ class TempTagServiceProvider extends ServiceProvider
     private function registerMigrations(): void
     {
         if ($this->app->runningInConsole() && $this->shouldLoadDefaultMigrations()) {
-            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
     }
 
@@ -148,7 +148,7 @@ class TempTagServiceProvider extends ServiceProvider
     private function configure(): void
     {
         if (!$this->app->configurationIsCached()) {
-            $this->mergeConfigFrom(__DIR__ . '/../config/temp_tag.php', 'tag');
+            $this->mergeConfigFrom(__DIR__.'/../config/temp_tag.php', 'tag');
         }
     }
 
