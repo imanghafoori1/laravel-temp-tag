@@ -120,7 +120,7 @@ class TagService
 
     private function fireEvent($event, $tag)
     {
-        !$event && $event = 'tmp_tagged';
+        ! $event && $event = 'tmp_tagged';
 
         $event .= ':'.$this->model->getTable().','.$tag->title;
 
