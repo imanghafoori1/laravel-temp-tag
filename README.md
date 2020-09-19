@@ -3,8 +3,9 @@
 You want to ban a user for a week? Tag it as 'banned' for a week and check the tag in a middleware.
 
 [![Latest Stable Version](https://poser.pugx.org/imanghafoori/laravel-temp-tag/v/stable)](https://packagist.org/packages/imanghafoori/laravel-temp-tag)
-[![Monthly Downloads](https://poser.pugx.org/imanghafoori/laravel-temp-tag/d/monthly)](https://packagist.org/packages/imanghafoori/laravel-temp-tag/stats)
 [![Total Downloads](https://poser.pugx.org/imanghafoori/laravel-temp-tag/downloads)](https://packagist.org/packages/imanghafoori/laravel-temp-tag/stats)
+[![StyleCI](https://github.styleci.io/repos/291741669/shield?branch=master)](https://github.styleci.io/repos/291741669?branch=master)
+<a href="https://scrutinizer-ci.com/g/imanghafoori1/laravel-temp-tag"><img src="https://img.shields.io/scrutinizer/g/imanghafoori1/laravel-temp-tag.svg?style=round-square" alt="Quality Score"></img></a>
 [![Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=round-square)](LICENSE.md)
 
 
