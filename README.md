@@ -40,6 +40,8 @@ Then you put a temporary tag on them and check to see if the model has the tag.
 
 You can also store some additional json data, for example why the user was banned, or who banned the user, or an slug or a translation of the title.
 
+This is done by passing the third argument as an array to the ```->tagIt(...)``` method
+
 ### Keynotes:
 
 - Tags can also be permanent.
