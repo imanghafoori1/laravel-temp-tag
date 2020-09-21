@@ -40,6 +40,8 @@ Then you put a temporary tag on them and check to see if the model has the tag.
 
 You can also store some additional json data, for example why the user was banned, or who banned the user, or an slug or a translation of the title.
 
+This is done by passing the third argument as an array to the ```->tagIt(...)``` method
+
 ### Keynotes:
 
 - Tags can also be permanent.
@@ -71,11 +73,13 @@ You can also store some additional json data, for example why the user was banne
 
 ```php
   $user = User::find(1);
-  $tagObj = tempTags($user)->getTag('banned');
+ 
+  $tagObj = tempTags($user)->getActiveTag('banned');  <--- Uses cache behind the scenes
 
   $tagObj->isActive();        // true
   $tagObj->isPermanent();     // false
   $tagObj->title === 'banned' // true
+  $tagObj->payload            // ['reason' => 'You were nasty!']
   $tagObj->expiresAt();       // Carbon instance
 ```
 
@@ -84,7 +88,7 @@ You can also store some additional json data, for example why the user was banne
 
 ```php
   $user = User::find(1);
-  $tagObj = tempTags($user)->getTag('banned');
+  $tagObj = tempTags($user)->getTag('banned');  <--- fetches the tag regardless of its expiration date.
 
   $tagObj->isActive();        // false
   $tagObj->isPermanent();     // false
@@ -97,7 +101,7 @@ You can also store some additional json data, for example why the user was banne
 Getting payload data:
 
 ```php
-  $tagObj->getPayload('reason');    //  'hostile activity!'      
+  $tagObj->getPayload('reason');    //  'You were nasty!'      
   $tagObj->getPayload();            //  ['reason' => 'You were nasty!'] 
   $tagObj->getPayload('missing_key');  //  null
 ```
@@ -124,7 +128,7 @@ Expire the tag with title of "banned" right now:
 
 ```php
 
- tempTags($user)->expireNow('banned');      // updates the value of "expire_at" to now()
+ tempTags($user)->expireNow('banned');  // updates the value of expire_at to now() and deletes from cache
 
 ```
 
@@ -177,6 +181,7 @@ Product::hasTempTags('slider')->where(...)->get();
 -------------
 
 ### Auto-delete Expired tags:
+In order to save disk space and have faster db queries you may want to delete the expired tags.
 
 After you have performed the basic installation you can start using the tag:delete-expired command. In most cases you'll want to schedule this command so you don't have to manually run it everytime you need to delete expired tags.
 
@@ -185,9 +190,8 @@ After you have performed the basic installation you can start using the tag:dele
 
 protected function schedule(Schedule $schedule)
 {
-  
-// Will run:  php artisan  tag:delete-expired
-      $schedule->command( 'tag:delete-expired' )->everyDay();
+    // Will run:  php artisan  tag:delete-expired
+    $schedule->command( 'tag:delete-expired' )->everyDay();
 }
 ```
 --------------------
@@ -222,8 +226,8 @@ As always if you found this package useful and you want to encourage us to maint
 
 - https://github.com/imanghafoori1/laravel-heyman
 
---------------
 
+<br><br>
 
 <p align="center">
 
