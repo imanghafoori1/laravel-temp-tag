@@ -37,6 +37,20 @@ class TempTagServiceProvider extends ServiceProvider
             });
         });
 
+        Builder::macro('hasNotActiveTempTags', function ($title) {
+            $table = $this->getModel()->getTable();
+            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+                TempTagServiceProvider::$registeredRelation[] = $table;
+                Relation::morphMap([
+                    $table => get_class($this->getModel()),
+                ]);
+            }
+
+            return $this->whereDoesntHave('activeTempTags', function ($q) use ($title) {
+                $q->whereIn('title', (array) $title);
+            });
+        });
+
         Builder::macro('hasExpiredTempTags', function ($title) {
             $table = $this->getModel()->getTable();
             if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
@@ -51,6 +65,20 @@ class TempTagServiceProvider extends ServiceProvider
             });
         });
 
+        Builder::macro('hasNotExpiredTempTags', function ($title) {
+            $table = $this->getModel()->getTable();
+            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+                TempTagServiceProvider::$registeredRelation[] = $table;
+                Relation::morphMap([
+                    $table => get_class($this->getModel()),
+                ]);
+            }
+
+            return $this->whereDoesntHave('expiredTempTags', function ($q) use ($title) {
+                $q->whereIn('title', (array) $title);
+            });
+        });
+
         Builder::macro('hasTempTags', function ($title) {
             $table = $this->getModel()->getTable();
             if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
@@ -60,6 +88,19 @@ class TempTagServiceProvider extends ServiceProvider
             }
 
             return $this->whereHas('tempTags', function ($q) use ($title) {
+                $q->whereIn('title', (array) $title);
+            });
+        });
+
+        Builder::macro('hasNotTempTags', function ($title) {
+            $table = $this->getModel()->getTable();
+            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+                TempTagServiceProvider::$registeredRelation[] = $table;
+
+                Relation::morphMap([$table => get_class($this->getModel())]);
+            }
+
+            return $this->whereDoesntHave('tempTags', function ($q) use ($title) {
                 $q->whereIn('title', (array) $title);
             });
         });
