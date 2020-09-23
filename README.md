@@ -23,6 +23,14 @@ composer require imanghafoori/laravel-temp-tag
 
 ```
 
+### Sample Application in laravel 8:
+
+https://github.com/imanghafoori1/laravel-tasks
+
+In this Daily Task app, you can mark your tasks as complete, but they return back to incomplete state at the end of the day, so you can re-do them tomorrow.
+
+
+
 ### Use cases:
 
 - You wanna ban a user, only for a week.
@@ -152,7 +160,7 @@ These methods just do what they say:
 
 Lets say you have a slider for your `Product` model and you want to show only those records which are tagged with 'slider'.
 
-First you have to put `Imanghafoori\Tags\Traits\hasTempTags` trait on the `Product` model
+First you have to put `Imanghafoori\Tags\Traits\hasTempTags` trait on the `Product` model.
 
 ```php
 
@@ -169,7 +177,7 @@ Now you can perform these queries:
 ```php
 Product::hasActiveTempTags('slider')->where(...)->get();
 
-// Only if the tag of model is expired and it has the specified titie.
+// Only if the tag of model is expired and it has the specified title.
 Product::hasExpiredTempTags('slider')->where(...)->get();
 
 // To fetch regardless of expiration date of tags, only the title matters.
@@ -180,7 +188,21 @@ Product::hasTempTags('slider')->where(...)->get();
 
 -------------
 
+### Absence of tags:
+
+```php
+Product::hasNotActiveTempTags('slider')->where(...)->get();
+
+Product::hasNotExpiredTempTags('slider')->where(...)->get();
+
+Product::hasNotTempTags('slider')->where(...)->get();
+```
+
+-------------
+
+
 ### Auto-delete Expired tags:
+
 In order to save disk space and have faster db queries you may want to delete the expired tags.
 
 After you have performed the basic installation you can start using the tag:delete-expired command. In most cases you'll want to schedule this command so you don't have to manually run it everytime you need to delete expired tags.
@@ -194,6 +216,7 @@ protected function schedule(Schedule $schedule)
     $schedule->command( 'tag:delete-expired' )->everyDay();
 }
 ```
+
 --------------------
 
 
