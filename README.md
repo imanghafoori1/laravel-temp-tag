@@ -208,7 +208,7 @@ tempTags($product1)->tagIt('status', $tomorrow, ['value' => 'sold_out']);
 tempTags($product2)->tagIt('status', $tomorrow, ['value' => 'sold_out']);
 
 
-Product::hasActiveTempTags('status', ['value', 'sold_out'])->where(...)->get();
+Product::hasActiveTempTags('status', ['value' => 'sold_out'])->where(...)->get();
 ```
 The above example gives you the products with active status tag which have also payload data with the specified key and value.
 
