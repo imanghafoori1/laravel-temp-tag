@@ -10,6 +10,8 @@ class CreatePayloadColumn extends Migration
     {
         Schema::table('temp_tags', function (Blueprint $table) {
             $table->json('payload')->nullable();
+        });
+        Schema::table('temp_tags', function (Blueprint $table) {
             $table->dropColumn('note');
         });
     }
