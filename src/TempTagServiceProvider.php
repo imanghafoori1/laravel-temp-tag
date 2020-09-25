@@ -104,7 +104,7 @@ class TempTagServiceProvider extends ServiceProvider
         return config('tag.load_default_migrations', true);
     }
 
-    static function registerRelationship($q)
+    public static function registerRelationship($q)
     {
         $table = $q->getModel()->getTable();
         if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
@@ -113,7 +113,7 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
-    static function getClosure($title): \Closure
+    public static function getClosure($title): \Closure
     {
         return function ($q) use ($title) {
             $q->whereIn('title', (array) $title);
