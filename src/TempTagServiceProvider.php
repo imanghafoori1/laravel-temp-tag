@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
 use Imanghafoori\Tags\Console\Commands\TestTempTags;
+use Imanghafoori\Tags\Models\TempTag;
 use Imanghafoori\Tags\Observers\TempTagObserver;
 
 class TempTagServiceProvider extends ServiceProvider
 {
     public static $registeredRelation = [];
 
+    /**
+     * Register bindings in the container.
+     *
+     * @return void
+     */
     public function register()
     {
         $this->registerConsoleCommands();
@@ -24,20 +30,35 @@ class TempTagServiceProvider extends ServiceProvider
     {
         $this->configure();
         $this->registerPublishes();
+//        $this->registerObservers();
     }
 
+    /**
+     * Register console commands.
+     *
+     * @return void
+     */
     protected function registerConsoleCommands()
     {
         if ($this->app->runningInConsole()) {
             $this->app->bind('command.tag:delete-expired', DeleteExpiredBans::class);
 
             $this->commands([
-                'command.tag:delete-expired',
-                TestTempTags::class,
+                'command.tag:delete-expired'
             ]);
         }
     }
 
+    protected function registerObservers()
+    {
+        $this->app->make(TempTag::class)->observe(new TempTagObserver());
+    }
+
+    /**
+     * Setup the resource publishing groups for Ban.
+     *
+     * @return void
+     */
     protected function registerPublishes()
     {
         if ($this->app->runningInConsole()) {
@@ -53,6 +74,11 @@ class TempTagServiceProvider extends ServiceProvider
         $this->registerMigrations();
     }
 
+    /**
+     * Register the Temporary Tag migrations.
+     *
+     * @return void
+     */
     private function registerMigrations()
     {
         if ($this->app->runningInConsole() && $this->shouldLoadDefaultMigrations()) {
@@ -60,6 +86,11 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Merge Temporary Tag configuration with the application configuration.
+     *
+     * @return void
+     */
     private function configure()
     {
         if (! $this->app->configurationIsCached()) {
@@ -81,46 +112,49 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
-    static function getClosure($title, $payload): \Closure
+    static function getClosure($title): \Closure
     {
-        return function ($q) use ($title, $payload) {
+        return function ($q) use ($title) {
             $q->whereIn('title', (array) $title);
-            if ($payload) {
-                $q->where('payload->'.$payload[0], $payload[1]);
-            }
         };
     }
 
     private function registerEloquentMacros()
     {
-        Builder::macro('hasActiveTempTags', $this->whereHasClosure('activeTempTags'));
-
-        Builder::macro('hasNotActiveTempTags', $this->whereHasNotClosure('activeTempTags'));
-
-        Builder::macro('hasExpiredTempTags', $this->whereHasClosure('expiredTempTags'));
-
-        Builder::macro('hasNotExpiredTempTags', $this->whereHasNotClosure('expiredTempTags'));
-
-        Builder::macro('hasTempTags', $this->whereHasClosure('tempTags'));
-
-        Builder::macro('hasNotTempTags', $this->whereHasNotClosure('tempTags'));
-    }
-
-    private function whereHasClosure($relation)
-    {
-        return function ($title, $payload) use($relation) {
+        Builder::macro('hasActiveTempTags', function ($title) {
             TempTagServiceProvider::registerRelationship($this);
 
-            return $this->whereHas($relation, TempTagServiceProvider::getClosure($title, $payload));
-        };
-    }
+            return $this->whereHas('activeTempTags', TempTagServiceProvider::getClosure($title));
+        });
 
-    private function whereHasNotClosure($relation): \Closure
-    {
-        return function ($title, $payload) use($relation) {
+        Builder::macro('hasNotActiveTempTags', function ($title) {
             TempTagServiceProvider::registerRelationship($this);
 
-            return $this->whereDoesntHave($relation, TempTagServiceProvider::getClosure($title, $payload));
-        };
+            return $this->whereDoesntHave('activeTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasExpiredTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereHas('expiredTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasNotExpiredTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereDoesntHave('expiredTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereHas('tempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasNotTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereDoesntHave('tempTags', TempTagServiceProvider::getClosure($title));
+        });
     }
 }
