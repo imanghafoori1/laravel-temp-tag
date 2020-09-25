@@ -190,6 +190,16 @@ class SampleTest extends TestCase
         $r = User::query()->hasTempTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
-        dd('Everything Is Ok.');
+        tempTags($user)->unTag();
+
+        tempTags($user)->tagIt('banned', null, ['by' => 'admin']);
+        $r = User::query()->hasTempTags('banned', ['by' => 'admin'])->first();
+        assert($r->email === 'iman@gmail.com');
+        $r = User::query()->hasTempTags('banned', ['by' => 'non-admin'])->first();
+        assert(is_null($r));
+        $r = User::query()->hasTempTags('banned-', ['by' => 'admin'])->first();
+        assert(is_null($r));
+        $r = User::query()->hasTempTags('banned', ['by' => 'admin', 'some' => 'value'])->first();
+        assert(is_null($r));
     }
 }
