@@ -41,6 +41,8 @@ In this Daily Task app, you can mark your tasks as complete, but they return bac
 
 - You wanna put a product in an slider for week.
 
+- Storing each user perferences, can be done by attaching a 'settings' tag and the perferences as payload.
+
 
 Then you put a temporary tag on them and check to see if the model has the tag.
 
