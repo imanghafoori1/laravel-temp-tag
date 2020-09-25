@@ -13,9 +13,8 @@ class TempTagServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->registerConsoleCommands();
-
         $this->registerEloquentMacros();
+        $this->registerConsoleCommands();
     }
 
     public function boot()
@@ -29,9 +28,7 @@ class TempTagServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->app->bind('command.tag:delete-expired', DeleteExpiredBans::class);
 
-            $this->commands([
-                'command.tag:delete-expired',
-            ]);
+            $this->commands(['command.tag:delete-expired']);
         }
     }
 
@@ -82,8 +79,8 @@ class TempTagServiceProvider extends ServiceProvider
     {
         return function ($q) use ($title, $payload) {
             $q->whereIn('title', (array) $title);
-            if ($payload) {
-                $q->where('payload->'.$payload[0], $payload[1]);
+            foreach ($payload as $key => $value) {
+                $q->where('payload->'.$key, $value);
             }
         };
     }
@@ -91,15 +88,12 @@ class TempTagServiceProvider extends ServiceProvider
     private function registerEloquentMacros()
     {
         Builder::macro('hasActiveTempTags', $this->whereHasClosure('activeTempTags'));
-
         Builder::macro('hasNotActiveTempTags', $this->whereHasNotClosure('activeTempTags'));
 
         Builder::macro('hasExpiredTempTags', $this->whereHasClosure('expiredTempTags'));
-
         Builder::macro('hasNotExpiredTempTags', $this->whereHasNotClosure('expiredTempTags'));
 
         Builder::macro('hasTempTags', $this->whereHasClosure('tempTags'));
-
         Builder::macro('hasNotTempTags', $this->whereHasNotClosure('tempTags'));
     }
 
