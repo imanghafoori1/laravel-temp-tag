@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
-use Imanghafoori\Tags\Console\Commands\TestTempTags;
 use Imanghafoori\Tags\Models\TempTag;
 use Imanghafoori\Tags\Observers\TempTagObserver;
 
@@ -44,7 +43,7 @@ class TempTagServiceProvider extends ServiceProvider
             $this->app->bind('command.tag:delete-expired', DeleteExpiredBans::class);
 
             $this->commands([
-                'command.tag:delete-expired'
+                'command.tag:delete-expired',
             ]);
         }
     }
@@ -103,7 +102,7 @@ class TempTagServiceProvider extends ServiceProvider
         return config('tag.load_default_migrations', true);
     }
 
-    static function registerRelationship($q)
+    public static function registerRelationship($q)
     {
         $table = $q->getModel()->getTable();
         if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
@@ -112,7 +111,7 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
-    static function getClosure($title): \Closure
+    public static function getClosure($title): \Closure
     {
         return function ($q) use ($title) {
             $q->whereIn('title', (array) $title);
