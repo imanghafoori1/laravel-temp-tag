@@ -5,14 +5,14 @@ namespace Imanghafoori\TempTagTests\Unit;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Imanghafoori\Tags\Models\TempTag;
-use Imanghafoori\TempTagTests\TestCase;
 use Imanghafoori\TempTagTests\Requirements\Stubs\Models\User;
+use Imanghafoori\TempTagTests\TestCase;
 
-class SampleTest extends TestCase {
-
+class SampleTest extends TestCase
+{
     /** @test */
-    public function main() {
-
+    public function main()
+    {
         TempTag::query()->delete();
         $user = new User();
         $user->id = 1;
@@ -89,21 +89,21 @@ class SampleTest extends TestCase {
         ];
 
         assert($res === [
-                   null,
-                   null,
-                   null,
+            null,
+            null,
+            null,
 
-                   null,
-                   null,
-                   null,
+            null,
+            null,
+            null,
 
-                   'covid19',
-                   'covid19',
-                   null,
+            'covid19',
+            'covid19',
+            null,
 
-                   'superman',
-                   2,
-               ]);
+            'superman',
+            2,
+        ]);
 
         // =================== test deleted tag =====================
 
