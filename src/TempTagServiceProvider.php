@@ -19,101 +19,14 @@ class TempTagServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(): void
+    public function register()
     {
         $this->registerConsoleCommands();
 
-        Builder::macro('hasActiveTempTags', function ($title) {
-            $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-                TempTagServiceProvider::$registeredRelation[] = $table;
-                Relation::morphMap([
-                    $table => get_class($this->getModel()),
-                ]);
-            }
-
-            return $this->whereHas('activeTempTags', function ($q) use ($title) {
-                $q->whereIn('title', (array) $title);
-            });
-        });
-
-        Builder::macro('hasNotActiveTempTags', function ($title) {
-            $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-                TempTagServiceProvider::$registeredRelation[] = $table;
-                Relation::morphMap([
-                    $table => get_class($this->getModel()),
-                ]);
-            }
-
-            return $this->whereDoesntHave('activeTempTags', function ($q) use ($title) {
-                $q->whereIn('title', (array) $title);
-            });
-        });
-
-        Builder::macro('hasExpiredTempTags', function ($title) {
-            $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-                TempTagServiceProvider::$registeredRelation[] = $table;
-                Relation::morphMap([
-                    $table => get_class($this->getModel()),
-                ]);
-            }
-
-            return $this->whereHas('expiredTempTags', function ($q) use ($title) {
-                $q->whereIn('title', (array) $title);
-            });
-        });
-
-        Builder::macro('hasNotExpiredTempTags', function ($title) {
-            $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-                TempTagServiceProvider::$registeredRelation[] = $table;
-                Relation::morphMap([
-                    $table => get_class($this->getModel()),
-                ]);
-            }
-
-            return $this->whereDoesntHave('expiredTempTags', function ($q) use ($title) {
-                $q->whereIn('title', (array) $title);
-            });
-        });
-
-        Builder::macro('hasTempTags', function ($title) {
-            $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-                TempTagServiceProvider::$registeredRelation[] = $table;
-
-                Relation::morphMap([$table => get_class($this->getModel())]);
-            }
-
-            return $this->whereHas('tempTags', function ($q) use ($title) {
-                $q->whereIn('title', (array) $title);
-            });
-        });
-
-        Builder::macro('hasNotTempTags', function ($title) {
-            $table = $this->getModel()->getTable();
-            if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-                TempTagServiceProvider::$registeredRelation[] = $table;
-
-                Relation::morphMap([$table => get_class($this->getModel())]);
-            }
-
-            return $this->whereDoesntHave('tempTags', function ($q) use ($title) {
-                $q->whereIn('title', (array) $title);
-            });
-        });
+        $this->registerEloquentMacros();
     }
 
-    /**
-     * Perform post-registration booting of services.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     *
-     * @return void
-     */
-    public function boot(): void
+    public function boot()
     {
         $this->configure();
         $this->registerPublishes();
@@ -125,7 +38,7 @@ class TempTagServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerConsoleCommands(): void
+    protected function registerConsoleCommands()
     {
         if ($this->app->runningInConsole()) {
             $this->app->bind('command.tag:delete-expired', DeleteExpiredBans::class);
@@ -137,14 +50,7 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register Ban's models observers.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     *
-     * @return void
-     */
-    protected function registerObservers(): void
+    protected function registerObservers()
     {
         $this->app->make(TempTag::class)->observe(new TempTagObserver());
     }
@@ -154,7 +60,7 @@ class TempTagServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerPublishes(): void
+    protected function registerPublishes()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -174,7 +80,7 @@ class TempTagServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerMigrations(): void
+    private function registerMigrations()
     {
         if ($this->app->runningInConsole() && $this->shouldLoadDefaultMigrations()) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -186,20 +92,70 @@ class TempTagServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function configure(): void
+    private function configure()
     {
         if (! $this->app->configurationIsCached()) {
             $this->mergeConfigFrom(__DIR__.'/../config/temp_tag.php', 'tag');
         }
     }
 
-    /**
-     * Determine if we should register default migrations.
-     *
-     * @return bool
-     */
-    private function shouldLoadDefaultMigrations(): bool
+    private function shouldLoadDefaultMigrations()
     {
         return config('tag.load_default_migrations', true);
+    }
+
+    static function registerRelationship($q)
+    {
+        $table = $q->getModel()->getTable();
+        if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
+            TempTagServiceProvider::$registeredRelation[] = $table;
+            Relation::morphMap([$table => get_class($q->getModel())]);
+        }
+    }
+
+    static function getClosure($title): \Closure
+    {
+        return function ($q) use ($title) {
+            $q->whereIn('title', (array) $title);
+        };
+    }
+
+    private function registerEloquentMacros()
+    {
+        Builder::macro('hasActiveTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereHas('activeTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasNotActiveTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereDoesntHave('activeTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasExpiredTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereHas('expiredTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasNotExpiredTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereDoesntHave('expiredTempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereHas('tempTags', TempTagServiceProvider::getClosure($title));
+        });
+
+        Builder::macro('hasNotTempTags', function ($title) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->whereDoesntHave('tempTags', TempTagServiceProvider::getClosure($title));
+        });
     }
 }
