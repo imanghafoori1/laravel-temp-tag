@@ -32,8 +32,7 @@ class TempTagServiceProvider extends ServiceProvider
             $this->app->bind('command.tag:delete-expired', DeleteExpiredBans::class);
 
             $this->commands([
-                'command.tag:delete-expired',
-                TestTempTags::class,
+                'command.tag:delete-expired'
             ]);
         }
     }
@@ -81,7 +80,7 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
-    static function getClosure($title, $payload): \Closure
+    static function getClosure($title, $payload)
     {
         return function ($q) use ($title, $payload) {
             $q->whereIn('title', (array) $title);
@@ -115,7 +114,7 @@ class TempTagServiceProvider extends ServiceProvider
         };
     }
 
-    private function whereHasNotClosure($relation): \Closure
+    private function whereHasNotClosure($relation)
     {
         return function ($title, $payload) use($relation) {
             TempTagServiceProvider::registerRelationship($this);
