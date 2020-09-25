@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
 use Imanghafoori\Tags\Console\Commands\TestTempTags;
-use Imanghafoori\Tags\Observers\TempTagObserver;
 
 class TempTagServiceProvider extends ServiceProvider
 {
@@ -72,7 +71,7 @@ class TempTagServiceProvider extends ServiceProvider
         return config('tag.load_default_migrations', true);
     }
 
-    static function registerRelationship($q)
+    public static function registerRelationship($q)
     {
         $table = $q->getModel()->getTable();
         if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
@@ -81,7 +80,7 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
-    static function getClosure($title, $payload): \Closure
+    public static function getClosure($title, $payload): \Closure
     {
         return function ($q) use ($title, $payload) {
             $q->whereIn('title', (array) $title);
@@ -108,7 +107,7 @@ class TempTagServiceProvider extends ServiceProvider
 
     private function whereHasClosure($relation)
     {
-        return function ($title, $payload) use($relation) {
+        return function ($title, $payload) use ($relation) {
             TempTagServiceProvider::registerRelationship($this);
 
             return $this->whereHas($relation, TempTagServiceProvider::getClosure($title, $payload));
@@ -117,7 +116,7 @@ class TempTagServiceProvider extends ServiceProvider
 
     private function whereHasNotClosure($relation): \Closure
     {
-        return function ($title, $payload) use($relation) {
+        return function ($title, $payload) use ($relation) {
             TempTagServiceProvider::registerRelationship($this);
 
             return $this->whereDoesntHave($relation, TempTagServiceProvider::getClosure($title, $payload));
