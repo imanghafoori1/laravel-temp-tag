@@ -105,13 +105,13 @@ class TempTagServiceProvider extends ServiceProvider
         Builder::macro('orHasExpiredTags', $this->whereHasClosure('expiredTempTags', 'orWhereHas'));
         Builder::macro('hasExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereHas'));
 
-        Builder::macro('hasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereDoesntHave'));
         Builder::macro('orHasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'orWhereDoesntHave'));
-
-        Builder::macro('hasTags', $this->whereHasClosure('tempTags', 'whereHas'));
-        Builder::macro('hasNotTags', $this->whereHasClosure('tempTags', 'whereDoesntHave'));
+        Builder::macro('hasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereDoesntHave'));
 
         Builder::macro('orHasTags', $this->whereHasClosure('tempTags', 'orWhereHas'));
+        Builder::macro('hasTags', $this->whereHasClosure('tempTags', 'whereHas'));
+
         Builder::macro('orHasNotTags', $this->whereHasClosure('tempTags', 'orWhereDoesntHave'));
+        Builder::macro('hasNotTags', $this->whereHasClosure('tempTags', 'whereDoesntHave'));
     }
 }
