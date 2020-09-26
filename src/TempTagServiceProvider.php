@@ -75,6 +75,15 @@ class TempTagServiceProvider extends ServiceProvider
         }
     }
 
+    private function whereHasClosure($relation, $method)
+    {
+        return function ($title, $payload = []) use ($relation, $method) {
+            TempTagServiceProvider::registerRelationship($this);
+
+            return $this->$method($relation, TempTagServiceProvider::getClosure($title, $payload));
+        };
+    }
+
     public static function getClosure($title, $payload)
     {
         return function ($q) use ($title, $payload) {
@@ -87,31 +96,13 @@ class TempTagServiceProvider extends ServiceProvider
 
     private function registerEloquentMacros()
     {
-        Builder::macro('hasActiveTempTags', $this->whereHasClosure('activeTempTags'));
-        Builder::macro('hasNotActiveTempTags', $this->whereHasNotClosure('activeTempTags'));
+        Builder::macro('hasActiveTags', $this->whereHasClosure('activeTempTags', 'whereHas'));
+        Builder::macro('hasNotActiveTags', $this->whereHasClosure('activeTempTags', 'whereDoesntHave'));
 
-        Builder::macro('hasExpiredTempTags', $this->whereHasClosure('expiredTempTags'));
-        Builder::macro('hasNotExpiredTempTags', $this->whereHasNotClosure('expiredTempTags'));
+        Builder::macro('hasExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereHas'));
+        Builder::macro('hasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereDoesntHave'));
 
-        Builder::macro('hasTempTags', $this->whereHasClosure('tempTags'));
-        Builder::macro('hasNotTempTags', $this->whereHasNotClosure('tempTags'));
-    }
-
-    private function whereHasClosure($relation)
-    {
-        return function ($title, $payload) use ($relation) {
-            TempTagServiceProvider::registerRelationship($this);
-
-            return $this->whereHas($relation, TempTagServiceProvider::getClosure($title, $payload));
-        };
-    }
-
-    private function whereHasNotClosure($relation)
-    {
-        return function ($title, $payload) use ($relation) {
-            TempTagServiceProvider::registerRelationship($this);
-
-            return $this->whereDoesntHave($relation, TempTagServiceProvider::getClosure($title, $payload));
-        };
+        Builder::macro('hasTags', $this->whereHasClosure('tempTags', 'whereHas'));
+        Builder::macro('hasNotTags', $this->whereHasClosure('tempTags', 'whereDoesntHave'));
     }
 }
