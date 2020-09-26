@@ -177,13 +177,13 @@ class Product extends Model
 Now you can perform these queries:
 
 ```php
-Product::hasActiveTempTags('slider')->where(...)->get();
+Product::hasActiveTags('slider')->where(...)->get();
 
 // Only if the tag of model is expired and it has the specified title.
-Product::hasExpiredTempTags('slider')->where(...)->get();
+Product::hasExpiredTags('slider')->where(...)->get();
 
 // To fetch regardless of expiration date of tags, only the title matters.
-Product::hasTempTags('slider')->where(...)->get();
+Product::hasTags('slider')->where(...)->get();
 ```
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
@@ -193,11 +193,11 @@ Product::hasTempTags('slider')->where(...)->get();
 ### Absence of tags:
 
 ```php
-Product::hasNotActiveTempTags('slider')->where(...)->get();
+Product::hasNotActiveTags('slider')->where(...)->get();
 
-Product::hasNotExpiredTempTags('slider')->where(...)->get();
+Product::hasNotExpiredTags('slider')->where(...)->get();
 
-Product::hasNotTempTags('slider')->where(...)->get();
+Product::hasNotTags('slider')->where(...)->get();
 ```
 
 -------------
