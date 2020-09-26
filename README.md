@@ -205,12 +205,17 @@ Product::hasNotTags('slider')->where(...)->get();
 ### Filtering based on payload:
 
 ```php
+$product1 = Product::find(1);
+$product2 = Product::find(1);
 
 tempTags($product1)->tagIt('status', $tomorrow, ['value' => 'sold_out']);
 tempTags($product2)->tagIt('status', $tomorrow, ['value' => 'sold_out']);
 
+// now we have tagged these two rows we can fetch them later on with the below query
 
-Product::hasActiveTempTags('status', ['value' => 'sold_out'])->where(...)->get();
+...
+
+Product::hasActiveTags('status', ['value' => 'sold_out'])->where(...)->get();
 ```
 The above example gives you the products with active status tag which have also payload data with the specified key and value.
 
