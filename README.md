@@ -214,6 +214,21 @@ Product::hasActiveTempTags('status', ['value' => 'sold_out'])->where(...)->get()
 ```
 The above example gives you the products with active status tag which have also payload data with the specified key and value.
 
+-------------
+
+### Advanced Usage:
+
+Each and every `has...Tag` method also has a twin `orHas...Tag` so you can put multiple conditions in the query.
+
+Remember that they both should reside in a `->where(function ($q) {` beside one another.
+
+```php
+Post::where('user_id', 12)->where(function ($q) {
+    $q->hasActiveTags('status', ['value' => 'active'])
+    ->orHasActiveTags('status', ['value' => 'promoted']);
+})->get();
+```
+-------------
 
 ### Auto-delete Expired tags:
 
