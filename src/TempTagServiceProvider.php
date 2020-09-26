@@ -96,13 +96,22 @@ class TempTagServiceProvider extends ServiceProvider
 
     private function registerEloquentMacros()
     {
+        Builder::macro('orHasActiveTags', $this->whereHasClosure('activeTempTags', 'orWhereHas'));
         Builder::macro('hasActiveTags', $this->whereHasClosure('activeTempTags', 'whereHas'));
+
+        Builder::macro('orHasNotActiveTags', $this->whereHasClosure('activeTempTags', 'orWhereDoesntHave'));
         Builder::macro('hasNotActiveTags', $this->whereHasClosure('activeTempTags', 'whereDoesntHave'));
 
+        Builder::macro('orHasExpiredTags', $this->whereHasClosure('expiredTempTags', 'orWhereHas'));
         Builder::macro('hasExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereHas'));
+
         Builder::macro('hasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereDoesntHave'));
+        Builder::macro('orHasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'orWhereDoesntHave'));
 
         Builder::macro('hasTags', $this->whereHasClosure('tempTags', 'whereHas'));
         Builder::macro('hasNotTags', $this->whereHasClosure('tempTags', 'whereDoesntHave'));
+
+        Builder::macro('orHasTags', $this->whereHasClosure('tempTags', 'orWhereHas'));
+        Builder::macro('orHasNotTags', $this->whereHasClosure('tempTags', 'orWhereDoesntHave'));
     }
 }
