@@ -283,17 +283,20 @@ As always if you found this package useful and you want to encourage us to maint
 
 - https://github.com/imanghafoori1/laravel-heyman
 
+<br>
 
-<br><br>
+**This package is originally inspired by the laravel-ban package by cybercog.**
 
+- https://github.com/cybercog/laravel-ban
+
+<br>
+<br>
 <p align="center">
-
  
     It's not that I'm so smart, it's just that I stay with problems longer.
 
 
     "Albert Einstein"
-    
-
+   
 </p>
 
