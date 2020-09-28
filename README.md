@@ -27,7 +27,7 @@ composer require imanghafoori/laravel-temp-tag
 
 https://github.com/imanghafoori1/laravel-tasks
 
-In this Daily Task app, you can mark your tasks as complete, but they return back to incomplete state at the end of the day, so you can re-do them tomorrow.
+In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored` and etc but they rollback back to the default state at the end of the day, so you can re-mark them for tomorrow.
 
 
 
@@ -39,7 +39,7 @@ In this Daily Task app, you can mark your tasks as complete, but they return bac
 
 - You wanna a Coupon code to be usable for until tomorrow.
 
-- You wanna put a product in an slider for week.
+- You wanna put a product in an slider for until weekend.
 
 - Storing each user perferences, can be done by attaching a 'settings' tag and the perferences as payload.
 
