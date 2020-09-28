@@ -1,4 +1,4 @@
-# Laravel Temp Tag
+# Eloquent Temporary Tags
 
 **You want to ban a user for a week? Tag it as 'banned' for a week and check the tag in a middleware.**
 
