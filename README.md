@@ -1,6 +1,6 @@
 # Eloquent Temporary Tags
 
-**Auto-expiring tags for your eloquent models with additional payload data.**
+### Auto-expiring tags with additional payload data on any eloquent model.
 
 <br>
 <br>
