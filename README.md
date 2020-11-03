@@ -46,6 +46,8 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 - Storing each user perferences, can be done by attaching a 'settings' tag and the perferences as payload.
 
+- Storing users likes and dislikes on any model
+
 
 Then you put a temporary tag on them and check to see if the model has the tag.
 
