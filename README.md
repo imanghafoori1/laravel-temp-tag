@@ -48,6 +48,8 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 - Storing users likes and dislikes on any model
 
+- Scheduling models to be published in future.
+
 
 Then you put a temporary tag on them and check to see if the model has the tag.
 
