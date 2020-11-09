@@ -18,9 +18,14 @@ class TagService
         $this->model = $model;
     }
 
+    public function cache()
+    {
+        return cache()->store('temp_tag');
+    }
+
     public function getActiveTag(string $tag)
     {
-        return cache()->get($this->getCacheKey($tag));
+        return $this->cache()->get($this->getCacheKey($tag));
 //        return $this->getActiveTagFromDB($tag);
     }
 
@@ -157,13 +162,13 @@ class TagService
     {
         $key = $this->getCacheKey($tg);
         if (is_null($expDate)) {
-            return cache()->forever($key, $tagObj);
+            return $this->cache()->forever($key, $tagObj);
         }
 
         if ($expDate->timestamp < now()->timestamp) {
-            cache()->delete($key);
+            $this->cache()->delete($key);
         } else {
-            cache()->put($key, $tagObj, $expDate);
+            $this->cache()->put($key, $tagObj, $expDate);
         }
     }
 
