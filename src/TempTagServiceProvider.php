@@ -13,7 +13,7 @@ class TempTagServiceProvider extends ServiceProvider
 
     public function register()
     {
-        config()->set('cache.stores.temp_tag', ['driver' => 'file', 'path' => storage_path('framework/temp_tag'),]);
+        config()->set('cache.stores.temp_tag', ['driver' => 'file', 'path' => storage_path('framework/temp_tag')]);
         $this->registerEloquentMacros();
         $this->registerConsoleCommands();
     }
