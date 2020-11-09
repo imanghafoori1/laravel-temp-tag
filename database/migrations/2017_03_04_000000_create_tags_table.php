@@ -19,7 +19,7 @@ class CreateTagsTable extends Migration
             $table->unsignedBigInteger('taggable_id');
             $table->index(['taggable_type', 'taggable_id']);
 
-            $table->string('note', 120)->nullable();
+            $table->json('payload')->nullable();
             $table->string('title', 30)->nullable();
             $table->timestamp('expired_at')->nullable()->index();
             $table->timestamp('created_at')->nullable();
