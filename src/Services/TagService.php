@@ -144,6 +144,7 @@ class TagService
     private function deleteAll($tags)
     {
         $tags->each(function ($tag) {
+            $this->cache()->delete($this->getCacheKey($tag));
             $tag->delete();
         });
     }
