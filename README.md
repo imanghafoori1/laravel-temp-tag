@@ -36,19 +36,19 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 ### Use cases:
 
-- You wanna ban a user, only for a week.
+- You wanna ban a user, but only for a week.
 
-- You wanna give someone VIP access only for a month.
+- You wanna give someone VIP access, but only for a month.
 
-- You wanna a Coupon code to be usable for until tomorrow.
+- You wanna a Coupon code to be usable until tomorrow.
 
-- You wanna put a product in an slider for until weekend.
+- You wanna put a product in a slider for until the weekend.
 
-- Storing each user perferences, can be done by attaching a 'settings' tag and the perferences as payload.
+- Storing each user preferences, can be done by attaching a 'settings' tag and the preferences as payload.
 
 - Storing users likes and dislikes on any model
 
-- Scheduling models to be published in future.
+- Scheduling models to be published in the future.
 
 
 Then you put a temporary tag on them and check to see if the model has the tag.
@@ -91,13 +91,13 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 ```php
   $user = User::find(1);
  
-  $tagObj = tempTags($user)->getActiveTag('banned');  <--- Uses cache behind the scenes
+  $tagObj = tempTags($user)->getActiveTag('banned');  // <--- Uses cache behind the scenes
 
-  $tagObj->isActive();        // true
-  $tagObj->isPermanent();     // false
-  $tagObj->title === 'banned' // true
-  $tagObj->payload            // ['reason' => 'You were nasty!']
-  $tagObj->expiresAt();       // Carbon instance
+  $tagObj->isActive();         // true
+  $tagObj->isPermanent();      // false
+  $tagObj->title === 'banned'; // true
+  $tagObj->payload;            // ['reason' => 'You were nasty!']
+  $tagObj->expiresAt();        // Carbon instance
 ```
 
 
@@ -105,12 +105,12 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 
 ```php
   $user = User::find(1);
-  $tagObj = tempTags($user)->getTag('banned');  <--- fetches the tag regardless of its expiration date.
+  $tagObj = tempTags($user)->getTag('banned');  // <--- fetches the tag regardless of its expiration date.
 
-  $tagObj->isActive();        // false
-  $tagObj->isPermanent();     // false
-  $tagObj->title === 'banned' // true
-  $tagObj->expiresAt();       // Carbon instance
+  $tagObj->isActive();         // false
+  $tagObj->isPermanent();      // false
+  $tagObj->title === 'banned'; // true
+  $tagObj->expiresAt();        // Carbon instance
 
 ```
 --------------
@@ -118,8 +118,8 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 Getting payload data:
 
 ```php
-  $tagObj->getPayload('reason');    //  'You were nasty!'      
-  $tagObj->getPayload();            //  ['reason' => 'You were nasty!'] 
+  $tagObj->getPayload('reason');       //  'You were nasty!'      
+  $tagObj->getPayload();               //  ['reason' => 'You were nasty!'] 
   $tagObj->getPayload('missing_key');  //  null
 ```
 
@@ -130,11 +130,11 @@ Getting payload data:
 ```php
   $user = User::find(1);
   
-  tempTags($user)->unTag('banned');          // single string
+  tempTags($user)->unTag('banned');           // single string
 
-  tempTags($user)->unTag(['banned', 'man']); // an array of tags to delete
+  tempTags($user)->unTag(['banned', 'man']);  // an array of tags to delete
 
-  tempTags($user)->deleteExpiredTags();     // all the expited tags, bye bye.
+  tempTags($user)->deleteExpiredTags();       // all the expited tags, bye bye.
 
 ```
 
@@ -207,6 +207,15 @@ Product::hasNotExpiredTags('slider')->where(...)->get();
 Product::hasNotTags('slider')->where(...)->get();
 ```
 
+### Use Case:
+When you want your article to be published in the future, go can tag your articles with a custom tag title like: "hidden"
+And fetch them like this:
+```php
+$articles = Article::hasNotActiveTags('hidden')->where(...)->get();
+```
+So, as long as the 'hidden' tag is active the article does not show on the list and when the tag gets expired the article goes live.
+
+
 -------------
 
 ### Filtering based on payload:
@@ -263,13 +272,13 @@ protected function schedule(Schedule $schedule)
 
 ### :raising_hand: Contributing:
 
-If you find an issue or have a better way to do something, feel free to open an issue or a pull request.
+If you find an issue or have a better way to do something, feel free to open an issue, or a pull request.
 
 If you use laravel-widgetize in your open source project, create a pull request to provide its URL as a sample application in the README.md file. 
 
 ### :star: Your Stars Make Us Do More :star:
 
-As always if you found this package useful and you want to encourage us to maintain and work on it, just press the star button to declare your willingness.
+As always if you found this package useful, and you want to encourage us to maintain and work on it, just press the star button to declare your willingness.
 
 -------------
 
@@ -292,7 +301,7 @@ As always if you found this package useful and you want to encourage us to maint
 
 <br>
 
-**This package is originally inspired by the laravel-ban package by cybercog.**
+**This package is originally inspired by the cybercog/laravel-ban package.**
 
 - https://github.com/cybercog/laravel-ban
 
