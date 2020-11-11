@@ -16,7 +16,7 @@ class SampleTest extends TestCase
         TempTag::query()->delete();
         $user = new User();
         $user->id = 1;
-
+        cache()->store('temp_tag')->flush();
         // =================== test no tag =====================
 
         $res = [
@@ -172,34 +172,36 @@ class SampleTest extends TestCase
         $user = User::where('email', 'iman@gmail.com')->first();
         tempTags($user)->tagIt('banned');
 
-        $r = User::query()->hasActiveTempTags(['banned', 'aaa'])->first();
+        $r = User::query()->hasActiveTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
-        $r = User::query()->hasTempTags(['banned', 'aaa'])->first();
+        $r = User::query()->hasTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
         // expire the tag
         tempTags($user)->expireNow('banned');
 
-        $r = User::query()->hasActiveTempTags(['banned', 'aaa'])->first();
+        $r = User::query()->hasActiveTags(['banned', 'aaa'])->first();
         assert(is_null($r));
 
-        $r = User::query()->hasExpiredTempTags(['banned', 'aaa'])->first();
+        $r = User::query()->hasExpiredTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
-        $r = User::query()->hasTempTags(['banned', 'aaa'])->first();
+        $r = User::query()->hasTags(['banned', 'aaa'])->first();
         assert($r->email === 'iman@gmail.com');
 
         tempTags($user)->unTag();
 
         tempTags($user)->tagIt('banned', null, ['by' => 'admin']);
-        $r = User::query()->hasTempTags('banned', ['by' => 'admin'])->first();
+        $r = User::query()->hasTags('banned', ['by' => 'admin'])->first();
         assert($r->email === 'iman@gmail.com');
-        $r = User::query()->hasTempTags('banned', ['by' => 'non-admin'])->first();
+        $r = User::query()->hasTags('banned', ['by' => 'non-admin'])->first();
         assert(is_null($r));
-        $r = User::query()->hasTempTags('banned-', ['by' => 'admin'])->first();
+        $r = User::query()->hasTags('banned-', ['by' => 'admin'])->first();
         assert(is_null($r));
-        $r = User::query()->hasTempTags('banned', ['by' => 'admin', 'some' => 'value'])->first();
+        $r = User::query()->hasTags('banned', ['by' => 'admin', 'some' => 'value'])->first();
         assert(is_null($r));
+
+        tempTags($user)->unTag('banned');
     }
 }

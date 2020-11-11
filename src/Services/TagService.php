@@ -64,20 +64,20 @@ class TagService
         return $this->getTagQuery($tag)->where('expired_at', '<', $this->now())->first();
     }
 
-    public function tagIt($tag, $expDate = null, $payload = null, $eventName = null)
+    public function tagIt($tagTitles, $expDate = null, $payload = null, $eventName = null)
     {
         $data = $this->getTaggableWhere();
         $exp = $this->expireDate($expDate);
 
-        $new_tags = [];
-        foreach ((array) $tag as $tg) {
-            $data['title'] = $tg;
-            $new_tags[] = $tagObj = TempTag::query()->updateOrCreate($data, $data + $exp + ['payload' => $payload]);
+        $newTags = [];
+        foreach ((array) $tagTitles as $title) {
+            $data['title'] = $title;
+            $newTags[] = $tagObj = TempTag::query()->updateOrCreate($data, $data + $exp + ['payload' => $payload]);
             $this->fireEvent($eventName, $tagObj);
-            $this->putInCache($tg, $expDate, $tagObj);
+            $this->putInCache($expDate, $tagObj);
         }
 
-        return $new_tags;
+        return $newTags;
     }
 
     public function unTag($titles = null)
@@ -144,14 +144,13 @@ class TagService
     private function deleteAll($tags)
     {
         $tags->each(function ($tag) {
-            $this->cache()->delete($this->getCacheKey($tag));
             $tag->delete();
         });
     }
 
-    private function getTagQuery(string $tag)
+    private function getTagQuery(string $tagTitle)
     {
-        return $this->query()->where('title', $tag);
+        return $this->query()->where('title', $tagTitle);
     }
 
     private function getCacheKey($title)
@@ -159,9 +158,9 @@ class TagService
         return 'temp_tag:'.$this->model->getTable().$this->model->getKey().','.$title;
     }
 
-    private function putInCache($tg, $expDate, $tagObj)
+    private function putInCache($expDate, $tagObj)
     {
-        $key = $this->getCacheKey($tg);
+        $key = $tagObj->getCacheKey();
         if (is_null($expDate)) {
             return $this->cache()->forever($key, $tagObj);
         }
@@ -173,8 +172,8 @@ class TagService
         }
     }
 
-    private function getActiveTagFromDB($tag)
+    private function getActiveTagFromDB($tagTitle)
     {
-        return $this->getTagQuery($tag)->where('expired_at', '>', $this->now())->first() ?: null;
+        return $this->getTagQuery($tagTitle)->where('expired_at', '>', $this->now())->first() ?: null;
     }
 }

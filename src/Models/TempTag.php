@@ -53,7 +53,7 @@ class TempTag extends Model
         parent::boot();
 
         self::deleted(function ($model) {
-            cache()->delete($model->getCacheKey());
+            cache()->store('temp_tag')->delete($model->getCacheKey());
         });
     }
 
