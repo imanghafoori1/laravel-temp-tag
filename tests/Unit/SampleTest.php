@@ -50,7 +50,7 @@ class SampleTest extends TestCase
         $this->assertFalse(tempTags($user)->getExpiredTag('banned')->isActive());
         $this->assertFalse(tempTags($user)->getTag('banned')->isActive());
         $this->assertNull(tempTags($user)->getActiveTag('banned'));
-        $this->assertEquals('banned',  tempTags($user)->getAllTags()->first()->title);
+        $this->assertEquals('banned', tempTags($user)->getAllTags()->first()->title);
 
         // =================== test deleted tag =====================
 
