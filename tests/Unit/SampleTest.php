@@ -47,24 +47,18 @@ class SampleTest extends TestCase
         // travel through time
         Carbon::setTestNow(Carbon::now()->addDay()->addMinute());
 
-        $res = [
-            tempTags($user)->getExpiredTag('banned')->isActive(),
-            tempTags($user)->getTag('banned')->isActive(),
-            tempTags($user)->getActiveTag('banned'),
-            tempTags($user)->getAllTags()->first()->title,
-        ];
-        assert($res === [false, false, null, 'banned']);
+        $this->assertFalse(tempTags($user)->getExpiredTag('banned')->isActive());
+        $this->assertFalse(tempTags($user)->getTag('banned')->isActive());
+        $this->assertNull(tempTags($user)->getActiveTag('banned'));
+        $this->assertEquals('banned',  tempTags($user)->getAllTags()->first()->title);
 
         // =================== test deleted tag =====================
 
         tempTags($user)->unTag('banned');
-        $res = [
-            tempTags($user)->getExpiredTag('banned'),
-            tempTags($user)->getTag('banned'),
-            tempTags($user)->getActiveTag('banned'),
-        ];
 
-        assert($res === [null, null, null]);
+        $this->assertNull(tempTags($user)->getExpiredTag('banned'));
+        $this->assertNull(tempTags($user)->getTag('banned'));
+        $this->assertNull(tempTags($user)->getActiveTag('banned'));
 
         // =================== test deleted tag =====================
 
@@ -120,15 +114,14 @@ class SampleTest extends TestCase
 
         tempTags($user)->tagIt('banned');
         tempTags($user)->unTag('manned');
+        $this->assertNull(tempTags($user)->getExpiredTag('banned'));
         $res = [
-            tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned')->isActive(),
             tempTags($user)->getActiveTag('banned')->isPermanent(),
             tempTags($user)->getAllTags()->count(),
         ];
-
-        assert($res === [null, true, true, true, 1]);
+        assert($res === [true, true, true, 1]);
 
         // =================== test expire tag =====================
 
