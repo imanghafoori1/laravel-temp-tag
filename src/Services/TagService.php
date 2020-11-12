@@ -196,7 +196,6 @@ class TagService
         return $tagsQuery;
     }
 
-
     public static function registerRelationship($q)
     {
         $table = $q->getModel()->getTable();
