@@ -55,7 +55,7 @@ Then you put a temporary tag on them and check to see if the model has the tag.
 
 ### Tag Payload:
 
-You can also store some additional json data, for example why the user was banned, or who banned the user, or an slug or a translation of the title.
+You can also store some additional json data, for example why the user got banned, or who banned the user, or a slug or a translation of the title.
 
 This is done by passing the third argument as an array to the ```->tagIt(...)``` method
 
@@ -101,11 +101,11 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 ```
 
 
-3- After a week the tag is expired out, so:
+3- After a week, the tag gets expired so:
 
 ```php
   $user = User::find(1);
-  $tagObj = tempTags($user)->getTag('banned');  // <--- fetches the tag regardless of its expiration date.
+  $tagObj = tempTags($user)->getTag('banned');  // <--- fetches the tag regardless of its expire date.
 
   $tagObj->isActive();         // false
   $tagObj->isPermanent();      // false
@@ -132,13 +132,17 @@ Getting payload data:
   
   tempTags($user)->unTag('banned');           // single string
 
+  tempTags($user)->unTag('bann*');            // using a wildcard 
+
   tempTags($user)->unTag(['banned', 'man']);  // an array of tags to delete
 
-  tempTags($user)->deleteExpiredTags();       // all the expited tags, bye bye.
+  tempTags($user)->deleteExpiredTags();       // all the expired tags, bye bye.
 
 ```
 
-**Note:** These fire "deleting" and "deleted" eloquent events for each and every one of them.
+**Note:** You can also use * wildcard which matcher 0 or more characters (just like % in sql)
+
+**Note:** These fire "deleting" and "deleted" eloquent events for each one of them.
 
 
 Expire the tag with title of "banned" right now:
@@ -233,7 +237,14 @@ tempTags($product2)->tagIt('status', $tomorrow, ['value' => 'sold_out']);
 
 Product::hasActiveTags('status', ['value' => 'sold_out'])->where(...)->get();
 ```
+
 The above example gives you the products with active status tag which have also payload data with the specified key and value.
+
+**Note:** You can also use * wildcard which matcher 0 or more characters (just like % in sql):
+```php
+
+Product::hasActiveTags('stat*', ['value' => 'sold_out'])->where(...)->get();
+```
 
 -------------
 
