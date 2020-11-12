@@ -5,6 +5,7 @@ namespace Imanghafoori\Tags;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
 
 class TempTagServiceProvider extends ServiceProvider
@@ -88,7 +89,13 @@ class TempTagServiceProvider extends ServiceProvider
     public static function getClosure($title, $payload)
     {
         return function ($q) use ($title, $payload) {
-            $q->whereIn('title', (array) $title);
+            if (is_string($title) && Str::contains($title, ['*'])) {
+                $title = str_replace('*', '%', $title);
+                $q->where('title', 'like', $title);
+            } else {
+                $q->whereIn('title', (array) $title);
+            }
+
             foreach ($payload as $key => $value) {
                 $q->where('payload->'.$key, $value);
             }

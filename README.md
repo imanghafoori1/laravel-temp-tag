@@ -167,7 +167,7 @@ These methods just do what they say:
 
 ### Fetch only tagged models:
 
-Lets say you have a slider for your `Product` model and you want to show only those records which are tagged with 'slider'.
+Let's say you have a slider for your `Product` model and you want to show only those records which are tagged with 'slider'.
 
 First you have to put `Imanghafoori\Tags\Traits\hasTempTags` trait on the `Product` model.
 

@@ -3,6 +3,7 @@
 namespace Imanghafoori\Tags\Services;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Imanghafoori\Tags\Models\TempTag;
 
 class TagService
@@ -86,7 +87,13 @@ class TagService
 
         $tags = TempTag::query()->where($forTaggable);
 
-        $titles && $tags->whereIn('title', (array) $titles);
+        if (is_string($titles) && Str::contains($titles, ['*'])) {
+            $titles = str_replace('*', '%', $titles);
+            $tags->where('title', 'like', $titles);
+        } else {
+            $titles && $tags->whereIn('title', (array) $titles);
+        }
+
         $tags = $tags->get();
         $this->deleteAll($tags);
     }

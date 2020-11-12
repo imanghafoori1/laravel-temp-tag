@@ -26,7 +26,7 @@ class SampleTest extends TestCase
             tempTags($user)->getActiveTag('banned'),
         ];
 
-        assert($res === [null, null, true, null]);
+        $this->assertTrue($res === [null, null, true, null]);
 
         // =================== test active tag =====================
 
@@ -40,7 +40,7 @@ class SampleTest extends TestCase
             tempTags($user)->getAllTags()->first()->title,
             tempTags($user)->getActiveTag('banned')->isPermanent(),
         ];
-        assert($res === [null, true, true, 'banned', false]);
+        $this->assertTrue($res === [null, true, true, 'banned', false]);
 
         // =================== test expired tag =====================
 
@@ -62,9 +62,17 @@ class SampleTest extends TestCase
 
         // =================== test deleted tag =====================
 
-        tempTags($user)->tagIt(['banned', 'man', 'superman', 'covid19']);
+        tempTags($user)->tagIt(['banned', 'man', 'superman', 'covid19', 'hello1', 'hello2']);
         tempTags($user)->tagIt('covid19', Carbon::now()->subSeconds(1));
         tempTags($user)->unTag(['banned', 'man']);
+
+
+        $this->assertNotNull(tempTags($user)->getActiveTag('hello1'));
+        tempTags($user)->unTag('hell*');
+        $this->assertNull(tempTags($user)->getActiveTag('hello1'));
+        $this->assertNull(tempTags($user)->getActiveTag('hello2'));
+        $this->assertNull(tempTags($user)->getExpiredTag('hello2'));
+
         $res = [
             tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned'),
@@ -82,7 +90,7 @@ class SampleTest extends TestCase
             tempTags($user)->getAllTags()->count(),
         ];
 
-        assert($res === [
+        $this->assertTrue($res === [
             null,
             null,
             null,
@@ -110,7 +118,7 @@ class SampleTest extends TestCase
             tempTags($user)->getAllTags()->isEmpty(),
         ];
 
-        assert($res === [null, null, null, true]);
+        $this->assertTrue($res === [null, null, null, true]);
 
         tempTags($user)->tagIt('banned');
         tempTags($user)->unTag('manned');
@@ -121,7 +129,7 @@ class SampleTest extends TestCase
             tempTags($user)->getActiveTag('banned')->isPermanent(),
             tempTags($user)->getAllTags()->count(),
         ];
-        assert($res === [true, true, true, 1]);
+        $this->assertTrue($res === [true, true, true, 1]);
 
         // =================== test expire tag =====================
 
@@ -133,7 +141,7 @@ class SampleTest extends TestCase
             tempTags($user)->getAllTags()->count(),
         ];
 
-        assert($res === ['banned', false, null, 1]);
+        $this->assertTrue($res === ['banned', false, null, 1]);
 
         // ================== make permanent ======================
 
@@ -149,9 +157,9 @@ class SampleTest extends TestCase
         $actives = tempTags($user)->getAllActiveTags();
         $expired = tempTags($user)->getAllExpiredTags();
         $all = tempTags($user)->getAllTags();
-        assert(($actives[0])->title === 'banned');
-        assert(($expired[0])->title === 'rut');
-        assert(count($all) === 2);
+        $this->assertTrue(($actives[0])->title === 'banned');
+        $this->assertTrue(($expired[0])->title === 'rut');
+        $this->assertTrue(count($all) === 2);
         Event::assertDispatched('tmp_tagged:users,rut');
 
         // ================== fetching records ======================
@@ -166,34 +174,40 @@ class SampleTest extends TestCase
         tempTags($user)->tagIt('banned');
 
         $r = User::query()->hasActiveTags(['banned', 'aaa'])->first();
-        assert($r->email === 'iman@gmail.com');
+        $this->assertTrue($r->email === 'iman@gmail.com');
+
+        $r = User::query()->hasActiveTags('ban*')->first();
+        $this->assertTrue($r->email === 'iman@gmail.com');
+
+        $r = User::query()->hasTags('ban*')->first();
+        $this->assertTrue($r->email === 'iman@gmail.com');
 
         $r = User::query()->hasTags(['banned', 'aaa'])->first();
-        assert($r->email === 'iman@gmail.com');
+        $this->assertTrue($r->email === 'iman@gmail.com');
 
         // expire the tag
         tempTags($user)->expireNow('banned');
 
         $r = User::query()->hasActiveTags(['banned', 'aaa'])->first();
-        assert(is_null($r));
+        $this->assertNull($r);
 
         $r = User::query()->hasExpiredTags(['banned', 'aaa'])->first();
-        assert($r->email === 'iman@gmail.com');
+        $this->assertTrue($r->email === 'iman@gmail.com');
 
         $r = User::query()->hasTags(['banned', 'aaa'])->first();
-        assert($r->email === 'iman@gmail.com');
+        $this->assertTrue($r->email === 'iman@gmail.com');
 
         tempTags($user)->unTag();
 
         tempTags($user)->tagIt('banned', null, ['by' => 'admin']);
         $r = User::query()->hasTags('banned', ['by' => 'admin'])->first();
-        assert($r->email === 'iman@gmail.com');
+        $this->assertTrue($r->email === 'iman@gmail.com');
         $r = User::query()->hasTags('banned', ['by' => 'non-admin'])->first();
-        assert(is_null($r));
+        $this->assertNull($r);
         $r = User::query()->hasTags('banned-', ['by' => 'admin'])->first();
-        assert(is_null($r));
+        $this->assertNull($r);
         $r = User::query()->hasTags('banned', ['by' => 'admin', 'some' => 'value'])->first();
-        assert(is_null($r));
+        $this->assertNull($r);
 
         tempTags($user)->unTag('banned');
     }
