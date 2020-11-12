@@ -50,7 +50,7 @@ class SampleTest extends TestCase
         $this->assertFalse(tempTags($user)->getExpiredTag('banned')->isActive());
         $this->assertFalse(tempTags($user)->getTag('banned')->isActive());
         $this->assertNull(tempTags($user)->getActiveTag('banned'));
-        $this->assertEquals('banned',  tempTags($user)->getAllTags()->first()->title);
+        $this->assertEquals('banned', tempTags($user)->getAllTags()->first()->title);
 
         // =================== test deleted tag =====================
 
@@ -65,7 +65,6 @@ class SampleTest extends TestCase
         tempTags($user)->tagIt(['banned', 'man', 'superman', 'covid19', 'hello1', 'hello2']);
         tempTags($user)->tagIt('covid19', Carbon::now()->subSeconds(1));
         tempTags($user)->unTag(['banned', 'man']);
-
 
         $this->assertNotNull(tempTags($user)->getActiveTag('hello1'));
         tempTags($user)->unTag('hell*');
