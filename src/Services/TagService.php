@@ -2,12 +2,15 @@
 
 namespace Imanghafoori\Tags\Services;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Imanghafoori\Tags\Models\TempTag;
 
 class TagService
 {
+    public static $registeredRelation = [];
+
     private static $maxLifeTime = '2038-01-01 00:00:00';
 
     private static $dateFormat = 'Y-m-d H:i:s';
@@ -37,12 +40,12 @@ class TagService
 
     public function getAllExpiredTags()
     {
-        return $this->query()->where('expired_at', '<', $this->now())->get();
+        return $this->query()->expired()->get();
     }
 
     public function getAllActiveTags()
     {
-        return $this->query()->where('expired_at', '>', $this->now())->get();
+        return $this->query()->active()->get();
     }
 
     public function getAllTags()
@@ -62,7 +65,7 @@ class TagService
 
     public function getExpiredTag(string $tag)
     {
-        return $this->getTagQuery($tag)->where('expired_at', '<', $this->now())->first();
+        return $this->getTagQuery($tag)->expired()->first();
     }
 
     public function tagIt($tagTitles, $expDate = null, $payload = null, $eventName = null)
@@ -83,25 +86,28 @@ class TagService
 
     public function unTag($titles = null)
     {
-        $forTaggable = $this->getTaggableWhere();
+        $this->deleteAll($this->queryTitles($titles)->get());
+    }
 
-        $tags = TempTag::query()->where($forTaggable);
+    public function getTagCount($titles = null)
+    {
+        return $this->queryTitles($titles)->count();
+    }
 
-        if (is_string($titles) && Str::contains($titles, ['*'])) {
-            $titles = str_replace('*', '%', $titles);
-            $tags->where('title', 'like', $titles);
-        } else {
-            $titles && $tags->whereIn('title', (array) $titles);
-        }
+    public function getActiveTagCount($titles = null)
+    {
+        return $this->queryTitles($titles)->active()->count();
+    }
 
-        $tags = $tags->get();
-        $this->deleteAll($tags);
+    public function getExpiredTagCount($titles = null)
+    {
+        return $this->queryTitles($titles)->expired()->count();
     }
 
     public function deleteExpiredTags()
     {
         $tags = TempTag::query()
-            ->where('expired_at', '<=', $this->now())
+            ->expired()
             ->get();
 
         $this->deleteAll($tags);
@@ -120,11 +126,6 @@ class TagService
     private function query()
     {
         return TempTag::query()->where($this->getTaggableWhere());
-    }
-
-    private function now(): string
-    {
-        return Carbon::now()->format(self::$dateFormat);
     }
 
     private function fireEvent($event, $tag)
@@ -181,6 +182,52 @@ class TagService
 
     private function getActiveTagFromDB($tagTitle)
     {
-        return $this->getTagQuery($tagTitle)->where('expired_at', '>', $this->now())->first() ?: null;
+        return $this->getTagQuery($tagTitle)->active()->first() ?: null;
+    }
+
+    private function queryTitles($titles)
+    {
+        $forTaggable = $this->getTaggableWhere();
+
+        $tagsQuery = TempTag::query()->where($forTaggable);
+
+        $titles && TagService::getClosure($titles, [])($tagsQuery);
+
+        return $tagsQuery;
+    }
+
+
+    public static function registerRelationship($q)
+    {
+        $table = $q->getModel()->getTable();
+        if (! in_array($table, TagService::$registeredRelation)) {
+            TagService::$registeredRelation[] = $table;
+            Relation::morphMap([$table => get_class($q->getModel())]);
+        }
+    }
+
+    public static function whereHasClosure($relation, $method)
+    {
+        return function ($title, $payload = []) use ($relation, $method) {
+            TagService::registerRelationship($this);
+
+            return $this->$method($relation, TagService::getClosure($title, $payload));
+        };
+    }
+
+    public static function getClosure($title, $payload)
+    {
+        return function ($q) use ($title, $payload) {
+            if (is_string($title) && Str::contains($title, ['*'])) {
+                $title = str_replace('*', '%', $title);
+                $q->where('title', 'like', $title);
+            } else {
+                $q->whereIn('title', (array) $title);
+            }
+
+            foreach ($payload as $key => $value) {
+                $q->where('payload->'.$key, $value);
+            }
+        };
     }
 }

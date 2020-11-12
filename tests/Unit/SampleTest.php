@@ -17,6 +17,7 @@ class SampleTest extends TestCase
         $user = new User();
         $user->id = 1;
         cache()->store('temp_tag')->flush();
+
         // =================== test no tag =====================
 
         $res = [
@@ -63,8 +64,19 @@ class SampleTest extends TestCase
         // =================== test deleted tag =====================
 
         tempTags($user)->tagIt(['banned', 'man', 'superman', 'covid19', 'hello1', 'hello2']);
+        $this->assertEquals(6, tempTags($user)->getTagCount());
+
         tempTags($user)->tagIt('covid19', Carbon::now()->subSeconds(1));
         tempTags($user)->unTag(['banned', 'man']);
+
+        $this->assertEquals(4, tempTags($user)->getTagCount());
+        $this->assertEquals(1, tempTags($user)->getTagCount('sup*'));
+        $this->assertEquals(2, tempTags($user)->getTagCount('hello*'));
+        $this->assertEquals(1, tempTags($user)->getTagCount('superman'));
+        $this->assertEquals(0, tempTags($user)->getTagCount('super-woman'));
+        $this->assertEquals(3, tempTags($user)->getActiveTagCount());
+        $this->assertEquals(1, tempTags($user)->getExpiredTagCount());
+        $this->assertEquals(1, tempTags($user)->getExpiredTagCount('covid*'));
 
         $this->assertNotNull(tempTags($user)->getActiveTag('hello1'));
         tempTags($user)->unTag('hell*');

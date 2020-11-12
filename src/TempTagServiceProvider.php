@@ -3,15 +3,12 @@
 namespace Imanghafoori\Tags;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
+use Imanghafoori\Tags\Services\TagService;
 
 class TempTagServiceProvider extends ServiceProvider
 {
-    public static $registeredRelation = [];
-
     public function register()
     {
         config()->set('cache.stores.temp_tag', ['driver' => 'file', 'path' => storage_path('framework/temp_tag')]);
@@ -68,58 +65,24 @@ class TempTagServiceProvider extends ServiceProvider
         return config('tag.load_default_migrations', true);
     }
 
-    public static function registerRelationship($q)
-    {
-        $table = $q->getModel()->getTable();
-        if (! in_array($table, TempTagServiceProvider::$registeredRelation)) {
-            TempTagServiceProvider::$registeredRelation[] = $table;
-            Relation::morphMap([$table => get_class($q->getModel())]);
-        }
-    }
-
-    private function whereHasClosure($relation, $method)
-    {
-        return function ($title, $payload = []) use ($relation, $method) {
-            TempTagServiceProvider::registerRelationship($this);
-
-            return $this->$method($relation, TempTagServiceProvider::getClosure($title, $payload));
-        };
-    }
-
-    public static function getClosure($title, $payload)
-    {
-        return function ($q) use ($title, $payload) {
-            if (is_string($title) && Str::contains($title, ['*'])) {
-                $title = str_replace('*', '%', $title);
-                $q->where('title', 'like', $title);
-            } else {
-                $q->whereIn('title', (array) $title);
-            }
-
-            foreach ($payload as $key => $value) {
-                $q->where('payload->'.$key, $value);
-            }
-        };
-    }
-
     private function registerEloquentMacros()
     {
-        Builder::macro('orHasActiveTags', $this->whereHasClosure('activeTempTags', 'orWhereHas'));
-        Builder::macro('hasActiveTags', $this->whereHasClosure('activeTempTags', 'whereHas'));
+        Builder::macro('orHasActiveTags', TagService::whereHasClosure('activeTempTags', 'orWhereHas'));
+        Builder::macro('hasActiveTags', TagService::whereHasClosure('activeTempTags', 'whereHas'));
 
-        Builder::macro('orHasNotActiveTags', $this->whereHasClosure('activeTempTags', 'orWhereDoesntHave'));
-        Builder::macro('hasNotActiveTags', $this->whereHasClosure('activeTempTags', 'whereDoesntHave'));
+        Builder::macro('orHasNotActiveTags', TagService::whereHasClosure('activeTempTags', 'orWhereDoesntHave'));
+        Builder::macro('hasNotActiveTags', TagService::whereHasClosure('activeTempTags', 'whereDoesntHave'));
 
-        Builder::macro('orHasExpiredTags', $this->whereHasClosure('expiredTempTags', 'orWhereHas'));
-        Builder::macro('hasExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereHas'));
+        Builder::macro('orHasExpiredTags', TagService::whereHasClosure('expiredTempTags', 'orWhereHas'));
+        Builder::macro('hasExpiredTags', TagService::whereHasClosure('expiredTempTags', 'whereHas'));
 
-        Builder::macro('orHasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'orWhereDoesntHave'));
-        Builder::macro('hasNotExpiredTags', $this->whereHasClosure('expiredTempTags', 'whereDoesntHave'));
+        Builder::macro('orHasNotExpiredTags', TagService::whereHasClosure('expiredTempTags', 'orWhereDoesntHave'));
+        Builder::macro('hasNotExpiredTags', TagService::whereHasClosure('expiredTempTags', 'whereDoesntHave'));
 
-        Builder::macro('orHasTags', $this->whereHasClosure('tempTags', 'orWhereHas'));
-        Builder::macro('hasTags', $this->whereHasClosure('tempTags', 'whereHas'));
+        Builder::macro('orHasTags', TagService::whereHasClosure('tempTags', 'orWhereHas'));
+        Builder::macro('hasTags', TagService::whereHasClosure('tempTags', 'whereHas'));
 
-        Builder::macro('orHasNotTags', $this->whereHasClosure('tempTags', 'orWhereDoesntHave'));
-        Builder::macro('hasNotTags', $this->whereHasClosure('tempTags', 'whereDoesntHave'));
+        Builder::macro('orHasNotTags', TagService::whereHasClosure('tempTags', 'orWhereDoesntHave'));
+        Builder::macro('hasNotTags', TagService::whereHasClosure('tempTags', 'whereDoesntHave'));
     }
 }

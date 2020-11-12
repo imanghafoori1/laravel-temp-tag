@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 class TempTag extends Model
 {
 //    use SoftDeletes;
+    private static $_dateFormat = 'Y-m-d H:i:s';
 
     const UPDATED_AT = null;
 
@@ -105,8 +106,23 @@ class TempTag extends Model
         ]);
     }
 
+    public function scopeExpired($q)
+    {
+        return $q->where('expired_at', '<', $this->now());
+    }
+
+    public function scopeActive($q)
+    {
+        return $q->where('expired_at', '>', $this->now());
+    }
+
     public function __toString()
     {
         return $this->getAttribute('title');
+    }
+
+    private function now(): string
+    {
+        return Carbon::now()->format(self::$_dateFormat);
     }
 }
