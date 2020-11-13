@@ -79,7 +79,9 @@ class SampleTest extends TestCase
         $this->assertEquals(1, tempTags($user)->getExpiredTagCount('covid*'));
 
         $this->assertNotNull(tempTags($user)->getActiveTag('hello1'));
+
         tempTags($user)->unTag('hell*');
+
         $this->assertNull(tempTags($user)->getActiveTag('hello1'));
         $this->assertNull(tempTags($user)->getActiveTag('hello2'));
         $this->assertNull(tempTags($user)->getExpiredTag('hello2'));
@@ -182,10 +184,25 @@ class SampleTest extends TestCase
             ]
         );
         $user = User::where('email', 'iman@gmail.com')->first();
-        tempTags($user)->tagIt('banned');
+        tempTags($user)->tagIt('banned', now()->addDays(2));
 
         $r = User::query()->hasActiveTags(['banned', 'aaa'])->first();
         $this->assertTrue($r->email === 'iman@gmail.com');
+
+        $r = User::query()->hasActiveTagsAt(['banned', 'aaa'], now()->addDay())->first();
+        $this->assertTrue($r->email === 'iman@gmail.com');
+
+        $r = User::query()->hasActiveTagsAt(['banned', 'aaa'], now())->first();
+        $this->assertTrue($r->email === 'iman@gmail.com');
+
+        $r = User::query()->hasActiveTagsAt(['banned', 'aaa'], now()->addDays(3))->first();
+        $this->assertNull($r);
+
+        $r = User::query()->hasNotActiveTagsAt(['banned', 'aaa'], now()->addDays(3))->first();
+        $this->assertTrue($r->email === 'iman@gmail.com');
+
+        $r = User::query()->hasNotActiveTagsAt(['banned', 'aaa'], now()->addDays(1))->first();
+        $this->assertNull($r);
 
         $r = User::query()->hasActiveTags('ban*')->first();
         $this->assertTrue($r->email === 'iman@gmail.com');

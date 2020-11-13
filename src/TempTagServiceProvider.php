@@ -69,6 +69,10 @@ class TempTagServiceProvider extends ServiceProvider
     {
         Builder::macro('orHasActiveTags', TagService::whereHasClosure('activeTempTags', 'orWhereHas'));
         Builder::macro('hasActiveTags', TagService::whereHasClosure('activeTempTags', 'whereHas'));
+        Builder::macro('hasActiveTagsAt', TagService::whereHasUntilClosure('whereHas'));
+        Builder::macro('hasNotActiveTagsAt', TagService::whereHasUntilClosure('whereDoesntHave'));
+        Builder::macro('orHasActiveTagsAt', TagService::whereHasUntilClosure('orWhereHas'));
+        Builder::macro('orHasNotActiveTagsAt', TagService::whereHasUntilClosure('orWhereDoesntHave'));
 
         Builder::macro('orHasNotActiveTags', TagService::whereHasClosure('activeTempTags', 'orWhereDoesntHave'));
         Builder::macro('hasNotActiveTags', TagService::whereHasClosure('activeTempTags', 'whereDoesntHave'));

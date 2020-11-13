@@ -200,8 +200,8 @@ class TagService
     {
         $table = $q->getModel()->getTable();
         if (! in_array($table, TagService::$registeredRelation)) {
-            TagService::$registeredRelation[] = $table;
             Relation::morphMap([$table => get_class($q->getModel())]);
+            TagService::$registeredRelation[] = $table;
         }
     }
 
@@ -214,9 +214,17 @@ class TagService
         };
     }
 
-    public static function getClosure($title, $payload)
+    public static function whereHasUntilClosure($method) {
+        return function ($title, $time, $payload = []) use ($method) {
+            TagService::registerRelationship($this);
+
+            return $this->$method('tempTags', TagService::getClosure($title, $payload, ['>', $time]));
+        };
+    }
+
+    public static function getClosure($title, $payload, $time = null)
     {
-        return function ($q) use ($title, $payload) {
+        return function ($q) use ($title, $payload, $time) {
             if (is_string($title) && Str::contains($title, ['*'])) {
                 $title = str_replace('*', '%', $title);
                 $q->where('title', 'like', $title);
@@ -227,6 +235,8 @@ class TagService
             foreach ($payload as $key => $value) {
                 $q->where('payload->'.$key, $value);
             }
+
+            $time && $q->where('expired_at', $time[0], $time[1]);
         };
     }
 }

@@ -197,6 +197,21 @@ Product::hasTags('slider')->where(...)->get();
 
 **Note:** If you pass an array of tags it acts like a `whereIn()`, so if the row has one of tags if will be selected.
 
+If you want to find products which will be active until tomorrow, you can use `hasActiveTagsAt`, or `hasNotActiveTagsAt` as illustrated below:
+```php
+Product::hasActiveTagsAt('slider', now()->addDay())->where(...)->get();
+
+Product::hasNotActiveTagsAt('slider', now()->addDay())->where(...)->get();
+```
+
+####Real world example:
+
+When you want to send a notification to users, just 24 hours before their VIP account gets finished, so that they can charge. 
+```php
+User::hasActiveTag('VIP')
+    ->hasNotActiveTagsAt('VIP', now()->addDay())
+    ->get();
+```
 -------------
 
 ### Absence of tags:
