@@ -232,7 +232,8 @@ class TagService
         };
     }
 
-    public static function whereHasUntilClosure($method) {
+    public static function whereHasUntilClosure($method)
+    {
         return function ($title, $time, $payload = []) use ($method) {
             TagService::registerRelationship($this);
 
