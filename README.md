@@ -54,7 +54,7 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 - Comments approval by admin.
 
-- You wanna put a product in a slider for until the weekend.
+- You wanna put a product in a slider until the weekend.
 
 - Storing each user preferences, can be done by attaching a 'settings' tag and the preferences as payload.
 
@@ -221,7 +221,7 @@ Product::hasActiveTagsAt('slider', now()->addDay())->where(...)->get();
 Product::hasNotActiveTagsAt('slider', now()->addDay())->where(...)->get();
 ```
 
-####Real world example:
+#### Example:
 
 When you want to send a notification to users, just 24 hours before their VIP account gets finished, so that they can charge. 
 ```php
