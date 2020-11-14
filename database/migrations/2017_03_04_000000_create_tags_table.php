@@ -24,8 +24,6 @@ class CreateTagsTable extends Migration
             $table->timestamp('expired_at')->nullable()->index();
             $table->timestamp('created_at')->nullable();
 
-            $table->softDeletes();
-
             $table->unique(['taggable_type', 'taggable_id', 'title', 'deleted_at']);
         });
     }
