@@ -17,6 +17,16 @@ class TagService
 
     private $model;
 
+    private static function queryForTitle($tagTitle, $q)
+    {
+        if (is_string($tagTitle) && Str::contains($tagTitle, ['*'])) {
+            $tagTitle = str_replace('*', '%', $tagTitle);
+            $q->where('title', 'like', $tagTitle);
+        } else {
+            $q->whereIn('title', (array) $tagTitle);
+        }
+    }
+
     public function setModel($model)
     {
         $this->model = $model;
@@ -33,9 +43,14 @@ class TagService
 //        return $this->getActiveTagFromDB($tag);
     }
 
-    public function getTag(string $tag): ?TempTag
+    public function getTag(string $tagTitle): ?TempTag
     {
-        return $this->getTagQuery($tag)->first();
+        return $this->getTagQuery($tagTitle)->first();
+    }
+
+    public function getTagsLike(string $tagTitle)
+    {
+        return $this->getTagQuery($tagTitle)->get();
     }
 
     public function getAllExpiredTags()
@@ -158,7 +173,10 @@ class TagService
 
     private function getTagQuery(string $tagTitle)
     {
-        return $this->query()->where('title', $tagTitle);
+        $q = $this->query();
+        self::queryForTitle($tagTitle, $q);
+
+        return $q;
     }
 
     private function getCacheKey($title)
@@ -222,15 +240,10 @@ class TagService
         };
     }
 
-    public static function getClosure($title, $payload, $time = null)
+    public static function getClosure($tagTitle, $payload, $time = null)
     {
-        return function ($q) use ($title, $payload, $time) {
-            if (is_string($title) && Str::contains($title, ['*'])) {
-                $title = str_replace('*', '%', $title);
-                $q->where('title', 'like', $title);
-            } else {
-                $q->whereIn('title', (array) $title);
-            }
+        return function ($q) use ($tagTitle, $payload, $time) {
+            self::queryForTitle($tagTitle, $q);
 
             foreach ($payload as $key => $value) {
                 $q->where('payload->'.$key, $value);

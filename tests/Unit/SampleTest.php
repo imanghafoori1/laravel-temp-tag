@@ -69,6 +69,11 @@ class SampleTest extends TestCase
         tempTags($user)->tagIt('covid19', Carbon::now()->subSeconds(1));
         tempTags($user)->unTag(['banned', 'man']);
 
+        $tags = tempTags($user)->getTagsLike('hello*');
+        $this->assertCount(2, $tags);
+        $this->assertEquals('hello1', $tags[0]->title);
+        $this->assertEquals('hello2', $tags[1]->title);
+
         $this->assertEquals(4, tempTags($user)->getTagCount());
         $this->assertEquals(1, tempTags($user)->getTagCount('sup*'));
         $this->assertEquals(2, tempTags($user)->getTagCount('hello*'));
