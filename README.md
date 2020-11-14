@@ -90,12 +90,14 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
   $user = User::find(1);
  
   $tagObj = tempTags($user)->getActiveTag('banned');  // <--- Uses cache behind the scenes
-
-  $tagObj->isActive();         // true
-  $tagObj->isPermanent();      // false
-  $tagObj->title === 'banned'; // true
-  $tagObj->payload;            // ['reason' => 'You were nasty!']
-  $tagObj->expiresAt();        // Carbon instance
+  
+  if (! is_null($tagObj)) {
+    $tagObj->isActive();         // true
+    $tagObj->isPermanent();      // false
+    $tagObj->title === 'banned'; // true
+    $tagObj->payload;            // ['reason' => 'You were nasty!']
+    $tagObj->expiresAt();        // Carbon instance
+  }
 ```
 
 
@@ -104,12 +106,13 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 ```php
   $user = User::find(1);
   $tagObj = tempTags($user)->getTag('banned');  // <--- fetches the tag regardless of its expire date.
-
-  $tagObj->isActive();         // false
-  $tagObj->isPermanent();      // false
-  $tagObj->title === 'banned'; // true
-  $tagObj->expiresAt();        // Carbon instance
-
+  
+  if (! is_null($tagObj)) {
+    $tagObj->isActive();         // false
+    $tagObj->isPermanent();      // false
+    $tagObj->title === 'banned'; // true
+    $tagObj->expiresAt();        // Carbon instance
+  }
 ```
 --------------
 
