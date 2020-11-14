@@ -58,9 +58,11 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 - Storing each user preferences, can be done by attaching a 'settings' tag and the preferences as payload.
 
-- Storing users likes and dislikes on any model
+- Storing users likes and dislikes on any model.
 
 - Scheduling models to be published in the future.
+
+- Coupon code for specific products on specific periods.
 
 
 Then you put a temporary tag on them and check to see if the model has the tag.
@@ -81,7 +83,7 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 
 --------------
 
-### Example Usage:
+### Example:
 
 1- Tag a user until tomorrow
 
@@ -239,7 +241,7 @@ Product::hasNotExpiredTags('slider')->where(...)->get();
 Product::hasNotTags('slider')->where(...)->get();
 ```
 
-### Use Case:
+### Example:
 When you want your article to be published in the future, go can tag your articles with a custom tag title like: "hidden"
 And fetch them like this:
 ```php
