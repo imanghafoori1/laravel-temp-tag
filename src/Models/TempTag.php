@@ -125,4 +125,13 @@ class TempTag extends Model
     {
         return Carbon::now()->format(self::$_dateFormat);
     }
+
+    public function incrementPayload($key, $amount = 1)
+    {
+        try {
+            $this->increment('payload->'.$key, $amount);
+        } catch (\Throwable $e) {
+            // laravel does not fully support incrementing json values.
+        }
+    }
 }

@@ -23,11 +23,12 @@ class SampleTest extends TestCase
         $res = [
             tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned'),
+            tempTags($user)->getTagsLike('*')->isEmpty(),
             tempTags($user)->getAllTags('banned')->isEmpty(),
             tempTags($user)->getActiveTag('banned'),
         ];
 
-        $this->assertTrue($res === [null, null, true, null]);
+        $this->assertTrue($res === [null, null, true, true, null]);
 
         // =================== test active tag =====================
 
@@ -43,6 +44,12 @@ class SampleTest extends TestCase
         ];
         $this->assertTrue($res === [null, true, true, 'banned', false]);
 
+        tempTags($user)->tagIt('banned_for', $tomorrow, ['count' => 1]);
+        $tag = tempTags($user)->getTag('banned_for');
+        $this->assertEquals(1, $tag->getPayload('count'));
+        $this->assertEquals(['count' => 1], $tag->getPayload());
+        $this->assertEquals(['count' => 1], $tag->payload);
+        tempTags($user)->unTag('banned_for');
         // =================== test expired tag =====================
 
         // travel through time
