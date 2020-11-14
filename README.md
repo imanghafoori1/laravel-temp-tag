@@ -52,7 +52,7 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 - You wanna give someone VIP access, but only for a month.
 
-- You wanna a Coupon code to be usable until tomorrow.
+- Comments approval by admin.
 
 - You wanna put a product in a slider for until the weekend.
 
