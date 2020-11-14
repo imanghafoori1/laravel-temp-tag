@@ -20,11 +20,18 @@
 
 ### Installation:
 
-```
-
+```bash
 composer require imanghafoori/laravel-temp-tag
 
 ```
+
+Then you can publish and migrate to create the needed tags table
+
+```bash
+php artisan vendor:publish
+php artisan migrate
+```
+
 
 ### Sample Application in laravel 8:
 
