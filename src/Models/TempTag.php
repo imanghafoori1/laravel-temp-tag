@@ -85,7 +85,7 @@ class TempTag extends Model
      */
     public function isPermanent(): bool
     {
-        return $this->expired_at->format('Y-m-d H:i:s') === '2038-01-01 00:00:00';
+        return $this->expired_at->year >= 2038;
     }
 
     /**
