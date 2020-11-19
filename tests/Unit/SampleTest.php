@@ -24,7 +24,7 @@ class SampleTest extends TestCase
             tempTags($user)->getExpiredTag('banned'),
             tempTags($user)->getTag('banned'),
             tempTags($user)->getTagsLike('*')->isEmpty(),
-            tempTags($user)->getAllTags('banned')->isEmpty(),
+            tempTags($user)->getAllTags()->isEmpty(),
             tempTags($user)->getActiveTag('banned'),
         ];
 

@@ -32,7 +32,7 @@ class TagService
         $this->model = $model;
     }
 
-    public function cache()
+    private function cache()
     {
         return cache()->store('temp_tag');
     }
@@ -205,9 +205,7 @@ class TagService
 
     private function queryTitles($titles)
     {
-        $forTaggable = $this->getTaggableWhere();
-
-        $tagsQuery = TempTag::query()->where($forTaggable);
+        $tagsQuery = $this->query();
 
         $titles && TagService::getClosure($titles, [])($tagsQuery);
 
