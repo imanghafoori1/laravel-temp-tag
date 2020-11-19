@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 
 class TempTag extends Model
 {
-//    use SoftDeletes;
     private static $_dateFormat = 'Y-m-d H:i:s';
 
     const UPDATED_AT = null;

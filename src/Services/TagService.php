@@ -37,9 +37,9 @@ class TagService
         return cache()->store('temp_tag');
     }
 
-    public function getActiveTag(string $tag)
+    public function getActiveTag(string $tagTitle)
     {
-        return $this->cache()->get($this->getCacheKey($tag));
+        return $this->cache()->get($this->getCacheKey($tagTitle));
 //        return $this->getActiveTagFromDB($tag);
     }
 
@@ -121,9 +121,7 @@ class TagService
 
     public function deleteExpiredTags()
     {
-        $tags = TempTag::query()
-            ->expired()
-            ->get();
+        $tags = TempTag::query()->expired()->get();
 
         $this->deleteAll($tags);
     }
@@ -198,7 +196,7 @@ class TagService
         }
     }
 
-    private function getActiveTagFromDB($tagTitle)
+    public function getActiveTagFromDB($tagTitle)
     {
         return $this->getTagQuery($tagTitle)->active()->first() ?: null;
     }

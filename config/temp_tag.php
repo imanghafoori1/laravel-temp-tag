@@ -2,14 +2,15 @@
 
 return [
     /*
-    |--------------------------------------------------------------------------
-    | Temp Tags Database Migrations
-    |--------------------------------------------------------------------------
-    |
-    | Determine if default package migrations should be registered.
-    | Set value to `false` when using customized migrations.
-    |
-    */
-    'load_default_migrations' => true,
+     |--------------------------------------------------------------------------
+     | Temp Tags Cache Storage Path
+     |--------------------------------------------------------------------------
+     |
+     | Inorder to be immune from the artisan cache:clear command
+     | temp-tag has its own storage path to store expiring data.
+     |
+     |
+     */
+    'cache_storage_path' => storage_path('framework/temp_tag'),
 
 ];
