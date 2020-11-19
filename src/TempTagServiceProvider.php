@@ -4,7 +4,7 @@ namespace Imanghafoori\Tags;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\ServiceProvider;
-use Imanghafoori\Tags\Console\Commands\DeleteExpiredBans;
+use Imanghafoori\Tags\Console\Commands\DeleteExpiredTempTags;
 use Imanghafoori\Tags\Services\TagService;
 
 class TempTagServiceProvider extends ServiceProvider
@@ -25,7 +25,7 @@ class TempTagServiceProvider extends ServiceProvider
     protected function registerConsoleCommands()
     {
         if ($this->app->runningInConsole()) {
-            $this->app->bind('command.tag:delete-expired', DeleteExpiredBans::class);
+            $this->app->bind('command.tag:delete-expired', DeleteExpiredTempTags::class);
 
             $this->commands(['command.tag:delete-expired']);
         }

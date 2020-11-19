@@ -11,7 +11,7 @@ class CreateTagsTable extends Migration
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('temp_tags', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
@@ -24,7 +24,7 @@ class CreateTagsTable extends Migration
             $table->timestamp('expired_at')->nullable()->index();
             $table->timestamp('created_at')->nullable();
 
-            $table->unique(['taggable_type', 'taggable_id', 'title', 'deleted_at']);
+            $table->unique(['taggable_type', 'taggable_id', 'title']);
         });
     }
 
@@ -33,7 +33,7 @@ class CreateTagsTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('temp_tags');
     }

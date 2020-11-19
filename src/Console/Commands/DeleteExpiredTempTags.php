@@ -5,7 +5,7 @@ namespace Imanghafoori\Tags\Console\Commands;
 use Illuminate\Console\Command;
 use Imanghafoori\Tags\Services\TagService;
 
-class DeleteExpiredBans extends Command
+class DeleteExpiredTempTags extends Command
 {
     /**
      * The name and signature of the console command.
