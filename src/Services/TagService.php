@@ -39,8 +39,19 @@ class TagService
 
     public function getActiveTag(string $tagTitle)
     {
-        return $this->cache()->get($this->getCacheKey($tagTitle));
-//        return $this->getActiveTagFromDB($tag);
+        $tag = $this->cache()->get($this->getCacheKey($tagTitle));
+
+        if ($tag) {
+            return $tag;
+        }
+
+        $tag = $this->getActiveTagFromDB($tagTitle);
+
+        if ($tag) {
+            $this->cache()->put($tag->getCacheKey(), $tag, $tag->expired_at);
+        }
+
+        return $tag;
     }
 
     public function getTag(string $tagTitle): ?TempTag

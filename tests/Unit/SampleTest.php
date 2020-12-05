@@ -13,10 +13,10 @@ class SampleTest extends TestCase
     /** @test */
     public function main()
     {
+        config()->set('cache.stores.temp_tag', ['driver' => 'array']);
         TempTag::query()->delete();
         $user = new User();
         $user->id = 1;
-        cache()->store('temp_tag')->flush();
 
         // =================== test no tag =====================
 
@@ -43,6 +43,9 @@ class SampleTest extends TestCase
             tempTags($user)->getActiveTag('banned')->isPermanent(),
         ];
         $this->assertTrue($res === [null, true, true, 'banned', false]);
+
+        cache()->store('temp_tag')->flush();
+        $this->assertTrue(tempTags($user)->getTag('banned')->isActive());
 
         tempTags($user)->tagIt('banned_for', $tomorrow, ['count' => 1]);
         $tag = tempTags($user)->getTag('banned_for');
