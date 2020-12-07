@@ -133,4 +133,13 @@ class TempTag extends Model
             // laravel does not fully support incrementing json values.
         }
     }
+
+    public function getAttribute($key)
+    {
+        if(!is_null($this->getPayload($key))){
+            return $this->getPayload($key);
+        }
+
+        return parent::getAttribute($key);
+    }
 }
