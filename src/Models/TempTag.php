@@ -136,7 +136,7 @@ class TempTag extends Model
 
     public function getAttribute($key)
     {
-        if(!is_null($this->getPayload($key))){
+        if (! is_null($this->getPayload($key))) {
             return $this->getPayload($key);
         }
 
