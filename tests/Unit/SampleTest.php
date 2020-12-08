@@ -47,11 +47,13 @@ class SampleTest extends TestCase
         cache()->store('temp_tag')->flush();
         $this->assertTrue(tempTags($user)->getTag('banned')->isActive());
 
-        tempTags($user)->tagIt('banned_for', $tomorrow, ['count' => 1]);
+        tempTags($user)->tagIt('banned_for', $tomorrow, ['count' => 1, 'ban_level' => 'hard']);
         $tag = tempTags($user)->getTag('banned_for');
         $this->assertEquals(1, $tag->getPayload('count'));
-        $this->assertEquals(['count' => 1], $tag->getPayload());
-        $this->assertEquals(['count' => 1], $tag->payload);
+        $this->assertEquals(1, $tag->count);
+        $this->assertEquals('hard', $tag->ban_level);
+        $this->assertEquals(['count' => 1, 'ban_level' => 'hard'], $tag->getPayload());
+        $this->assertEquals(['count' => 1, 'ban_level' => 'hard'], $tag->payload);
         tempTags($user)->unTag('banned_for');
         // =================== test expired tag =====================
 

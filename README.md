@@ -132,11 +132,22 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
 
 Getting payload data:
 
+There are 2 ways to get payload data :
+
+You can use `getPayload` method 
 ```php
   $tagObj->getPayload('reason');       //  'You were nasty!'      
   $tagObj->getPayload();               //  ['reason' => 'You were nasty!'] 
   $tagObj->getPayload('missing_key');  //  null
 ```
+
+or You can act like eloquent attributes :
+```php
+  $tagObj->reason;       //  'You were nasty!'      
+  $tagObj->payload;      //  ['reason' => 'You were nasty!'] 
+  $tagObj->missing_key;  //  null
+```
+
 
 --------------
 
