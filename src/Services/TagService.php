@@ -224,9 +224,19 @@ class TagService
     public static function registerRelationship($q)
     {
         $table = $q->getModel()->getTable();
-        if (! in_array($table, TagService::$registeredRelation)) {
+        $relations = Relation::morphMap();
+        if (! isset($relations[$table]) && ! in_array($table, TagService::$registeredRelation)) {
             Relation::morphMap([$table => get_class($q->getModel())]);
-            TagService::$registeredRelation[] = $table;
+            TagService::$registeredRelation[$table] = $table;
+        }
+    }
+
+    public static function unregisterRelationship($q)
+    {
+        $table = $q->getModel()->getTable();
+        if (in_array($table, TagService::$registeredRelation)) {
+            unset(Relation::$morphMap[$table]);
+            unset(TagService::$registeredRelation[$table]);
         }
     }
 
@@ -235,7 +245,10 @@ class TagService
         return function ($title, $payload = []) use ($relation, $method) {
             TagService::registerRelationship($this);
 
-            return $this->$method($relation, TagService::getClosure($title, $payload));
+            $query = $this->$method($relation, TagService::getClosure($title, $payload));
+            TagService::unregisterRelationship($query);
+
+            return $query;
         };
     }
 
@@ -244,7 +257,10 @@ class TagService
         return function ($title, $time, $payload = []) use ($method) {
             TagService::registerRelationship($this);
 
-            return $this->$method('tempTags', TagService::getClosure($title, $payload, ['>', $time]));
+            $query = $this->$method('tempTags', TagService::getClosure($title, $payload, ['>', $time]));
+            TagService::unregisterRelationship($query);
+
+            return $query;
         };
     }
 
