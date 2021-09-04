@@ -34,7 +34,7 @@ class TagService
 
     private function cache()
     {
-        return cache()->store('temp_tag');
+        return app()->runningUnitTests() ? cache() : cache()->store('temp_tag');
     }
 
     public function getActiveTag(string $tagTitle)
