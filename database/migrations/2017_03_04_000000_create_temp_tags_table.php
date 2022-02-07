@@ -13,6 +13,10 @@ class CreateTempTagsTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('temp_tags')) {
+            return null;
+        }
+
         Schema::create('temp_tags', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true);
             $table->string('taggable_type', 32);
