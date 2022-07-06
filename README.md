@@ -93,9 +93,9 @@ This is done by passing the third argument as an array to the ```->tagIt(...)```
   $tomorrow = Carbon::now()->addDay();
   $note = ['reason' => 'You were nasty!']; // You can optionally store additional data in a json column.
 
-  tempTags($userObj)->tagIt('banned', $tomorrow, $note);
+  tempTags($user)->tagIt('banned', $tomorrow, $note);
 
-  tempTags($userObj)->tagIt('banned');  // will never expire
+  tempTags($user)->tagIt('banned');  // will never expire
 ```
 
 2- After an hour the tag is still active, so:
