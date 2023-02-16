@@ -326,8 +326,6 @@ protected function schedule(Schedule $schedule)
 
 If you find an issue or have a better way to do something, feel free to open an issue, or a pull request.
 
-If you use laravel-widgetize in your open source project, create a pull request to provide its URL as a sample application in the README.md file. 
-
 ### :star: Your Stars Make Us Do More :star:
 
 As always if you found this package useful, and you want to encourage us to maintain and work on it, just press the star button to declare your willingness.
