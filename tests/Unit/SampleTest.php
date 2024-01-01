@@ -187,8 +187,8 @@ class SampleTest extends TestCase
         $actives = tempTags($user)->getAllActiveTags();
         $expired = tempTags($user)->getAllExpiredTags();
         $all = tempTags($user)->getAllTags();
-        $this->assertTrue(($actives[0])->title === 'banned');
-        $this->assertTrue(($expired[0])->title === 'rut');
+        $this->assertTrue($actives[0]->title === 'banned');
+        $this->assertTrue($expired[0]->title === 'rut');
         $this->assertTrue(count($all) === 2);
         Event::assertDispatched('tmp_tagged:users,rut');
 
@@ -196,7 +196,7 @@ class SampleTest extends TestCase
         User::query()->delete();
         User::query()->insert(
             [
-                'email'    => 'iman@gmail.com',
+                'email' => 'iman@gmail.com',
                 'password' => bcrypt('111'),
             ]
         );
