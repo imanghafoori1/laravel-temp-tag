@@ -142,7 +142,7 @@ class TagService
         $taggable = $this->model;
 
         return [
-            'taggable_id'   => $taggable->getKey(),
+            'taggable_id' => $taggable->getKey(),
             'taggable_type' => $taggable->getTable(),
         ];
     }
