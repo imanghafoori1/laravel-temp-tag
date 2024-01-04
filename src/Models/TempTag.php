@@ -41,7 +41,7 @@ class TempTag extends Model
     protected $casts = [
         'expired_at' => 'datetime',
         'deleted_at' => 'datetime',
-        'payload'    => 'json',
+        'payload' => 'json',
     ];
 
     public function taggable(): MorphTo
@@ -102,7 +102,7 @@ class TempTag extends Model
     {
         return $query->where([
             'taggable_type' => $taggable->getMorphClass(),
-            'taggable_id'   => $taggable->getKey(),
+            'taggable_id' => $taggable->getKey(),
         ]);
     }
 
