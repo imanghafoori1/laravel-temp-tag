@@ -48,13 +48,13 @@ In this Daily Task app, you can mark your tasks as `complete`,`failed`,`ignored`
 
 ### Use cases:
 
-- You wanna ban a user, but only for a week.
+- You want to ban a user, but only for a week.
 
-- You wanna give someone VIP access, but only for a month.
+- You want to give someone VIP access, but only for a month.
 
 - Comments approval by admin.
 
-- You wanna put a product in a slider until the weekend.
+- You want to put a product in a slider until the weekend.
 
 - Storing each user preferences, can be done by attaching a 'settings' tag and the preferences as payload.
 
